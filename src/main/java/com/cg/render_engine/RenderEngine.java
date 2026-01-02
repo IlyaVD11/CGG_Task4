@@ -1,11 +1,9 @@
 package com.cg.render_engine;
 
-import com.cg.math.Vector3f;
+import com.cg.math.*;
 import com.cg.model.Model;
 import javafx.scene.canvas.GraphicsContext;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Point2f;
 import java.util.ArrayList;
 
 import static com.cg.render_engine.GraphicConveyor.*;
@@ -19,11 +17,11 @@ public class RenderEngine {
             final int width,
             final int height)
     {
-        Matrix4f modelMatrix = rotateScaleTranslate();
-        Matrix4f viewMatrix = camera.getViewMatrix();
-        Matrix4f projectionMatrix = camera.getProjectionMatrix();
+        Matrix4x4 modelMatrix = rotateScaleTranslate();
+        Matrix4x4 viewMatrix = camera.getViewMatrix();
+        Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
 
-        Matrix4f modelViewProjectionMatrix = new Matrix4f(modelMatrix);
+        Matrix4x4 modelViewProjectionMatrix = new Matrix4x4(modelMatrix);
         modelViewProjectionMatrix.mul(viewMatrix);
         modelViewProjectionMatrix.mul(projectionMatrix);
 

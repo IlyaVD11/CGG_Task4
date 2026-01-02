@@ -38,13 +38,15 @@ public class Vector2f {
         return (float) Math.sqrt(x * x + y * y);
     }
 
-    public void normalize() throws Exception {
+    public void normalize() {
         float length = getLength();
         if (length < eps2) {
-            throw new Exception("Деление на ноль");
+            x = 0.0f;
+            y = 0.0f;
+        } else {
+            x /= length;
+            y /= length;
         }
-        x /= length;
-        y /= length;
     }
 
     public float dotProduct(Vector2f other) {

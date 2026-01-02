@@ -39,14 +39,17 @@ public class Vector3f {
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
 
-    public void normalize() throws Exception {
+    public void normalize() {
         float length = getLength();
         if (length < eps2) {
-            throw new Exception("Деление на ноль");
+            x = 0.0f;
+            y = 0.0f;
+            z = 0.0f;
+        } else {
+            x /= length;
+            y /= length;
+            z /= length;
         }
-        x /= length;
-        y /= length;
-        z /= length;
     }
 
     public float dotProduct(Vector3f other) {

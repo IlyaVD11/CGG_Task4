@@ -4,14 +4,17 @@ import com.cg.math.Vector3f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class Vector3fTest {
+    private static final float eps = 1e-7f;
 
     @Test
     public void testAddition3f() {
         final Vector3f vector3f = new Vector3f(1.5f, 3, 7);
         final Vector3f result = vector3f.addition(new Vector3f(5, 3, 1));
         final Vector3f expectedResult = new Vector3f(6.5f, 6, 8);
-        Assertions.assertTrue(result.equals(expectedResult));
+        assertTrue(result.equals(expectedResult));
     }
 
     @Test
@@ -19,7 +22,7 @@ public class Vector3fTest {
         final Vector3f vector3f = new Vector3f(1.5f, 3, 14);
         final Vector3f result = vector3f.subtraction(new Vector3f(1, 1.5f, 7));
         final Vector3f expectedResult = new Vector3f(0.5f, 1.5f, 7);
-        Assertions.assertTrue(result.equals(expectedResult));
+        assertTrue(result.equals(expectedResult));
     }
 
     @Test
@@ -27,7 +30,7 @@ public class Vector3fTest {
         final Vector3f vector3f = new Vector3f(1.5f, 3, 4);
         final Vector3f result = vector3f.multiply(1.5f);
         final Vector3f expectedResult = new Vector3f(2.25f, 4.5f, 6);
-        Assertions.assertTrue(result.equals(expectedResult));
+        assertTrue(result.equals(expectedResult));
     }
 
     @Test
@@ -53,13 +56,10 @@ public class Vector3fTest {
     @Test
     public void testNormalize3f() {
         final Vector3f vector3f = new Vector3f(0, 0, 0);
-        try {
-            vector3f.normalize();
-            Assertions.fail();
-        } catch (Exception e) {
-            String expectedError = "Деление на ноль";
-            Assertions.assertEquals(expectedError, e.getMessage());
-        }
+        vector3f.normalize();
+        assertTrue(Math.abs(vector3f.x) < eps);
+        assertTrue(Math.abs(vector3f.y) < eps);
+        assertTrue(Math.abs(vector3f.z) < eps);
     }
 
     @Test
@@ -75,6 +75,6 @@ public class Vector3fTest {
         final Vector3f vector3f = new Vector3f(3, 1, 7);
         final Vector3f result = vector3f.crossProduct(new Vector3f(5, 3, 1));
         final Vector3f expectedResult = new Vector3f(-20, 32, 4);
-        Assertions.assertTrue(result.equals(expectedResult));
+        assertTrue(result.equals(expectedResult));
     }
 }

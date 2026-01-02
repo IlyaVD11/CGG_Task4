@@ -1,10 +1,14 @@
 package tests.math;
 
+import com.cg.math.Vector2f;
 import com.cg.math.Vector4f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class Vector4fTest {
+    private static final float eps = 1e-7f;
 
     @Test
     public void testAddition4f() {
@@ -53,13 +57,11 @@ public class Vector4fTest {
     @Test
     public void testNormalize4f() {
         final Vector4f vector4f = new Vector4f(0, 0, 0, 0);
-        try {
-            vector4f.normalize();
-            Assertions.fail();
-        } catch (Exception e) {
-            String expectedError = "Деление на ноль";
-            Assertions.assertEquals(expectedError, e.getMessage());
-        }
+        vector4f.normalize();
+        assertTrue(Math.abs(vector4f.x) < eps);
+        assertTrue(Math.abs(vector4f.y) < eps);
+        assertTrue(Math.abs(vector4f.z) < eps);
+        assertTrue(Math.abs(vector4f.w) < eps);
     }
 
     @Test

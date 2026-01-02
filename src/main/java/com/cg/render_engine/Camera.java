@@ -49,7 +49,7 @@ public class Camera {
         this.target.addition(target);
     }
 
-    Matrix4x4 getViewMatrix() throws Exception {
+    Matrix4x4 getViewMatrix()  {
         return GraphicConveyor.lookAt(position, target);
     }
 

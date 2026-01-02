@@ -40,10 +40,13 @@ public class Vector4f {
         return (float) Math.sqrt(x * x + y * y + z * z + w * w);
     }
 
-    public void normalize() throws Exception {
+    public void normalize() {
         float length = getLength();
         if (length < eps2) {
-            throw new Exception("Деление на ноль");
+            x = 0.0f;
+            y = 0.0f;
+            z = 0.0f;
+            w = 0.0f;
         }
         x /= length;
         y /= length;

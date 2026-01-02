@@ -11,11 +11,11 @@ public class GraphicConveyor {
         return Matrix4x4.identityMatrix4x4();
     }
 
-    public static Matrix4x4 lookAt(Vector3f eye, Vector3f target) throws Exception {
+    public static Matrix4x4 lookAt(Vector3f eye, Vector3f target)  {
         return lookAt(eye, target, new Vector3f(0F, 1.0F, 0F));
     }
 
-    public static Matrix4x4 lookAt(Vector3f eye, Vector3f target, Vector3f up) throws Exception {
+    public static Matrix4x4 lookAt(Vector3f eye, Vector3f target, Vector3f up)  {
         Vector3f resultX;
         Vector3f resultY;
         Vector3f resultZ;

@@ -1,9 +1,9 @@
-package tests;
+package tests.math;
 
+import com.cg.math.Matrix3x3;
+import com.cg.math.Vector3f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import mathematics.linAlg.Matrix3x3;
-import mathematics.linAlg.Vector3f;
 
 public class Matrix3x3Test {
 

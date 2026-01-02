@@ -1,4 +1,4 @@
-package mathematics.linAlg;
+package com.cg.math;
 
 import java.util.Objects;
 

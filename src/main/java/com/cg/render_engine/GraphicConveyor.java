@@ -1,5 +1,9 @@
-package mathematics.conveyor;
-import mathematics.linAlg.*;
+package com.cg.render_engine;
+
+import com.cg.math.Matrix4x4;
+import com.cg.math.Vector2f;
+import com.cg.math.Vector3f;
+import com.cg.math.Vector4f;
 
 public class GraphicConveyor {
 

@@ -1,4 +1,4 @@
-package mathematics.linAlg;
+package com.cg.math;
 
 public class Vector4f {
     private static final float eps = 1e-7f;

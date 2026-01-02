@@ -1,7 +1,7 @@
-package mathematics.camera;
+package com.cg.render_engine;
 
-import mathematics.conveyor.GraphicConveyor;
-import mathematics.linAlg.*;
+import com.cg.math.Matrix4x4;
+import com.cg.math.Vector3f;
 
 
 public class Camera {

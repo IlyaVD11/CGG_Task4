@@ -1,8 +1,8 @@
-package tests;
+package tests.math;
 
+import com.cg.math.Vector3f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import mathematics.linAlg.Vector3f;
 
 public class Vector3fTest {
 

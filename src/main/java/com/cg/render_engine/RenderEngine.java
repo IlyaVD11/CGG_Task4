@@ -15,8 +15,12 @@ public class RenderEngine {
             final Camera camera,
             final Model mesh,
             final int width,
-            final int height)  {
-        Matrix4x4 modelMatrix = new Matrix4x4();
+            final int height) {
+        Matrix4x4 modelMatrix = rotateScaleTranslate(
+                1.0F, 1.0F, 1.0F,
+                0.0F, 0.0F, 0.0F,
+                new Vector3f(0.0F, 0.0F, 0.0F)
+        );
         Matrix4x4 viewMatrix = camera.getViewMatrix();
         Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
 

@@ -1,14 +1,62 @@
 package com.cg.render_engine;
 
-import com.cg.math.Matrix4x4;
-import com.cg.math.Vector2f;
-import com.cg.math.Vector3f;
-import com.cg.math.Vector4f;
+import com.cg.math.*;
 
 public class GraphicConveyor {
 
-    public static Matrix4x4 rotateScaleTranslate() {
-        return Matrix4x4.identityMatrix4x4();
+    public static Matrix4x4 rotateScaleTranslate(
+            float scaleX,
+            float scaleY,
+            float scaleZ,
+            float theta,
+            float psi,
+            float phi,
+            Vector3f translationVector
+    ) {
+        Matrix4x4 scaleMatrix = new Matrix4x4();
+        scaleMatrix.createMatrix4x4(
+                scaleX, 0, 0, 0,
+                0, scaleY, 0, 0,
+                0, 0, scaleZ, 0,
+                0, 0, 0, 1
+        );
+
+        Matrix4x4 rotateMatrixX = new Matrix4x4();
+        rotateMatrixX.createMatrix4x4(
+                1, 0, 0, 0,
+                0, (float) Math.cos(theta), (float) Math.sin(theta), 0,
+                0, -((float) Math.sin(theta)), (float) Math.cos(theta), 0,
+                0, 0, 0, 1
+        );
+
+        Matrix4x4 rotateMatrixY = new Matrix4x4();
+        rotateMatrixY.createMatrix4x4(
+                (float) Math.cos(psi), 0, (float) Math.sin(psi), 0,
+                0, 1, 0, 0,
+                -((float) Math.sin(psi)), 0, (float) Math.cos(psi), 0,
+                0, 0, 0, 1
+        );
+
+        Matrix4x4 rotateMatrixZ = new Matrix4x4();
+        rotateMatrixZ.createMatrix4x4(
+                (float) Math.cos(phi), (float) Math.sin(phi), 0, 0,
+                -((float) Math.sin(phi)), (float) Math.cos(phi), 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+        );
+
+        Matrix4x4 rotateMatrix = rotateMatrixX.multiply(rotateMatrixY).multiply(rotateMatrixZ);
+
+        Matrix4x4 translationMatrix = new Matrix4x4();
+        translationMatrix.createMatrix4x4(
+                1, 0, 0, translationVector.x,
+                0, 1, 0, translationVector.y,
+                0, 0, 1, translationVector.z,
+                0, 0, 0, 1
+        );
+
+        Matrix4x4 modelMatrix = translationMatrix.multiply(rotateMatrix).multiply(scaleMatrix);
+        return modelMatrix;
     }
 
     public static Matrix4x4 lookAt(Vector3f eye, Vector3f target)  {
@@ -61,14 +109,7 @@ public class GraphicConveyor {
         return result;
     }
 
-    public static Vector3f multiplyMatrix4ByVector3(final Matrix4x4 matrix, final Vector3f vertex) {
-        Vector4f vector4f = new Vector4f(vertex.x, vertex.y, vertex.z, 1.0F);
-        Vector4f result = matrix.multiplyOnVector(vector4f);
-
-        return new Vector3f(result.x, result.y, result.z);
-    }
-
     public static Vector2f vertexToPoint(final Vector3f vertex, final int width, final int height) {
-        return new Vector2f(vertex.x * width + width / 2.0F, -vertex.y * height + height / 2.0F);
+        return new Vector2f(vertex.x * (width - 1) / 2.0F + (width - 1) / 2.0F, -vertex.y * (height - 1) / 2.0F + (height - 1) / 2.0F);
     }
 }

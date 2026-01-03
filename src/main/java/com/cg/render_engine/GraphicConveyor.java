@@ -101,8 +101,8 @@ public class GraphicConveyor {
         float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov * 0.5F)));
 
         result.createMatrix4x4(
-                tangentMinusOnDegree, 0, 0, 0,
-                0, tangentMinusOnDegree / aspectRatio, 0, 0,
+                tangentMinusOnDegree / aspectRatio, 0, 0, 0,
+                0, tangentMinusOnDegree, 0, 0,
                 0, 0, (farPlane + nearPlane) / (farPlane - nearPlane), 2 * (nearPlane * farPlane) / (nearPlane - farPlane),
                 0, 0, 1, 0
         );
@@ -110,6 +110,6 @@ public class GraphicConveyor {
     }
 
     public static Vector2f vertexToPoint(final Vector3f vertex, final int width, final int height) {
-        return new Vector2f(vertex.x * (width - 1) / 2.0F + (width - 1) / 2.0F, -vertex.y * (height - 1) / 2.0F + (height - 1) / 2.0F);
+        return new Vector2f(vertex.x * width + width / 2.0F, -vertex.y * height + height / 2.0F);
     }
 }

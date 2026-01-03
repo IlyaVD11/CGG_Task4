@@ -41,7 +41,7 @@ public class Camera {
     }
 
     public void movePosition(final Vector3f translation) {
-        this.position.addition(translation);
+        this.position = this.position.addition(translation);
     }
 
     public void moveTarget(final Vector3f translation) {

@@ -13,7 +13,7 @@ public class Simple3DViewer extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        AnchorPane viewport = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("fxml/gui.fxml")));
+        AnchorPane viewport = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/cg/fxml/gui.fxml")));
 
         Scene scene = new Scene(viewport);
         stage.setMinWidth(1600);

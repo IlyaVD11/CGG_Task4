@@ -1,7 +1,6 @@
 package com.cg.render_engine;
 
-import com.cg.math.Matrix4x4;
-import com.cg.math.Vector3f;
+import com.cg.math.*;
 
 
 public class Camera {
@@ -46,7 +45,7 @@ public class Camera {
     }
 
     public void moveTarget(final Vector3f translation) {
-        this.target.addition(target);
+        this.target.addition(translation);
     }
 
     Matrix4x4 getViewMatrix()  {
@@ -57,10 +56,21 @@ public class Camera {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
+    Matrix4x4 getModelMatrix() {
+        return GraphicConveyor.rotateScaleTranslate(scaleX, scaleY, scaleZ, theta, psi, phi, translationVector);
+    }
+
     private Vector3f position;
     private Vector3f target;
     private float fov;
     private float aspectRatio;
     private float nearPlane;
     private float farPlane;
+    private float scaleX;
+    private float scaleY;
+    private float scaleZ;
+    private float theta;
+    private float psi;
+    private float phi;
+    private Vector3f translationVector;
 }

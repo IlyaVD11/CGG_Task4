@@ -56,21 +56,10 @@ public class Camera {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
-    Matrix4x4 getModelMatrix() {
-        return GraphicConveyor.rotateScaleTranslate(scaleX, scaleY, scaleZ, theta, psi, phi, translationVector);
-    }
-
     private Vector3f position;
     private Vector3f target;
     private float fov;
     private float aspectRatio;
     private float nearPlane;
     private float farPlane;
-    private float scaleX;
-    private float scaleY;
-    private float scaleZ;
-    private float theta;
-    private float psi;
-    private float phi;
-    private Vector3f translationVector;
 }

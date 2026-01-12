@@ -8,10 +8,14 @@ import com.cg.render_engine.RenderEngine;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -27,14 +31,39 @@ import java.nio.file.Path;
 public class GuiController {
 
     final private float TRANSLATION = 0.5F;
-    final private float ROTATE = 0.5F;
-    final private float SCALE = 0.5F;
 
     @FXML
     AnchorPane anchorPane;
 
     @FXML
     private Canvas canvas;
+
+    @FXML
+    private TextField txtScaleX;
+
+    @FXML
+    private TextField txtScaleY;
+
+    @FXML
+    private TextField txtScaleZ;
+
+    @FXML
+    private TextField txtTheta;
+
+    @FXML
+    private TextField txtPsi;
+
+    @FXML
+    private TextField txtPhi;
+
+    @FXML
+    private TextField txtTranslateX;
+
+    @FXML
+    private TextField txtTranslateY;
+
+    @FXML
+    private TextField txtTranslateZ;
 
     private Model mesh = null;
 
@@ -90,33 +119,69 @@ public class GuiController {
         timeline.getKeyFrames().add(frame);
         timeline.play();
 
-        canvas.setOnMousePressed(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                mouseX = mouseEvent.getX();
-                mouseY = mouseEvent.getY();
-                isDragging = true;
-            }
-        });
+        canvas.setOnMousePressed(this::handleMousePress);
+        canvas.setOnMouseDragged(this::handleMouseDragged);
+        canvas.setOnMouseReleased(this::handleMouseRelease);
+        canvas.setOnScroll(this::handleOnScroll);
+        updateUI();
+    }
 
-        canvas.setOnMouseDragged(mouseEvent -> {
-            if (isDragging) {
-                float dx = (float) (mouseEvent.getX() - mouseX);
-                float dy = (float) (mouseEvent.getY() - mouseY);
-                mouseX = mouseEvent.getX();
-                mouseY = mouseEvent.getY();
+    private void loadFromTextField() {
+        try {
+            scaleX = Float.parseFloat(txtScaleX.getText());
+            scaleY = Float.parseFloat(txtScaleY.getText());
+            scaleZ = Float.parseFloat(txtScaleZ.getText());
 
-                camera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
-            }
-        });
+            theta = Float.parseFloat(txtTheta.getText());
+            psi = Float.parseFloat(txtPsi.getText());
+            phi = Float.parseFloat(txtPhi.getText());
 
-        canvas.setOnMouseReleased(mouseEvent -> {
-            isDragging = false;
-        });
+            translateX = Float.parseFloat(txtTranslateX.getText());
+            translateY = Float.parseFloat(txtTranslateY.getText());
+            translateZ = Float.parseFloat(txtTranslateZ.getText());
+        } catch (Exception ignored) {
 
-        canvas.setOnScroll(mouseEvent -> {
-            float zoomStep = (float) (mouseEvent.getDeltaY() / 100.0F);
-            camera.movePosition(new Vector3f(0.0F, 0.0F, zoomStep));
-        });
+        }
+    }
+
+    private void updateUI() {
+        TextField[] fields = {
+                txtScaleX, txtScaleY, txtScaleZ,
+                txtTheta, txtPsi, txtPhi,
+                txtTranslateX, txtTranslateY, txtTranslateZ
+        };
+        ChangeListener<String> listener = (observable, oldValue, newValue) -> loadFromTextField();
+        for (TextField field : fields) {
+            field.textProperty().addListener(listener);
+        }
+    }
+
+    private void handleMousePress(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+            mouseX = mouseEvent.getX();
+            mouseY = mouseEvent.getY();
+            isDragging = true;
+        }
+    }
+
+    private void handleMouseDragged(MouseEvent mouseEvent) {
+        if (isDragging) {
+            float dx = (float) (mouseEvent.getX() - mouseX);
+            float dy = (float) (mouseEvent.getY() - mouseY);
+            mouseX = mouseEvent.getX();
+            mouseY = mouseEvent.getY();
+
+            camera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
+        }
+    }
+
+    private void handleMouseRelease(MouseEvent mouseEvent) {
+        isDragging = false;
+    }
+
+    private void handleOnScroll(ScrollEvent mouseEvent) {
+        float zoomStep = (float) (mouseEvent.getDeltaY() / 100.0F);
+        camera.movePosition(new Vector3f(0.0F, 0.0F, zoomStep));
     }
 
     @FXML
@@ -142,7 +207,7 @@ public class GuiController {
     }
 
     // todo: сделать сохранение модели до и после преобразований
-    // todo: также нужно добавить кнопки для масштабирования, поворота и перемещения
+    // todo: также нужно добавить текстовые поля для масштабирования, поворота и перемещения
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
@@ -171,95 +236,5 @@ public class GuiController {
     @FXML
     public void handleCameraDown(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
-    }
-
-    @FXML
-    public void increaseScaleX(ActionEvent actionEvent) {
-        scaleX += SCALE;
-    }
-
-    @FXML
-    public void decreaseScaleX(ActionEvent actionEvent) {
-        scaleX -= SCALE;
-    }
-
-    @FXML
-    public void increaseScaleY(ActionEvent actionEvent) {
-        scaleY += SCALE;
-    }
-
-    @FXML
-    public void decreaseScaleY(ActionEvent actionEvent) {
-        scaleY -= SCALE;
-    }
-
-    @FXML
-    public void increaseScaleZ(ActionEvent actionEvent) {
-        scaleZ += SCALE;
-    }
-
-    @FXML
-    public void decreaseScaleZ(ActionEvent actionEvent) {
-        scaleZ -= SCALE;
-    }
-
-    @FXML
-    public void increaseTheta(ActionEvent actionEvent) {
-        theta += ROTATE;
-    }
-
-    @FXML
-    public void decreaseTheta(ActionEvent actionEvent) {
-        theta -= ROTATE;
-    }
-
-    @FXML
-    public void increasePsi(ActionEvent actionEvent) {
-        psi += ROTATE;
-    }
-
-    @FXML
-    public void decreasePsi(ActionEvent actionEvent) {
-        psi -= ROTATE;
-    }
-
-    @FXML
-    public void increasePhi(ActionEvent actionEvent) {
-        phi += ROTATE;
-    }
-
-    @FXML
-    public void decreasePhi(ActionEvent actionEvent) {
-        phi -= ROTATE;
-    }
-
-    @FXML
-    public void increaseTranslateX(ActionEvent actionEvent) {
-        translateX += TRANSLATION;
-    }
-
-    @FXML
-    public void decreaseTranslateX(ActionEvent actionEvent) {
-        translateX -= TRANSLATION;
-    }
-
-    @FXML
-    public void increaseTranslateY(ActionEvent actionEvent) {
-        translateY += TRANSLATION;
-    }
-
-    @FXML
-    public void decreaseTranslateY(ActionEvent actionEvent) {
-        translateY -= TRANSLATION;
-    }
-
-    @FXML
-    public void increaseTranslateZ(ActionEvent actionEvent) {
-        translateZ += TRANSLATION;
-    }
-
-    @FXML
-    public void decreaseTranslateZ(ActionEvent actionEvent) {
-        translateZ -= TRANSLATION;
     }
 }

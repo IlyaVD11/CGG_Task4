@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import com.cg.math.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,6 +27,8 @@ import java.nio.file.Path;
 public class GuiController {
 
     final private float TRANSLATION = 0.5F;
+    final private float ROTATE = 0.5F;
+    final private float SCALE = 0.5F;
 
     @FXML
     AnchorPane anchorPane;
@@ -50,7 +53,9 @@ public class GuiController {
     private float psi= 0.0F;
     private float phi = 0.0F;
 
-    private Vector3f translationVector = new Vector3f(0.0F, 0.0F, 0.0F);
+    private float translateX = 0.0F;
+    private float translateY = 0.0F;
+    private float translateZ = 0.0F;
 
     private double mouseX;
     private double mouseY;
@@ -76,7 +81,7 @@ public class GuiController {
                 Matrix4x4 modelMatrix = GraphicConveyor.rotateScaleTranslate(
                         scaleX, scaleY, scaleZ,
                         theta, psi, phi,
-                        translationVector
+                        translateX, translateY, translateZ
                 );
                 RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height, modelMatrix);
             }
@@ -136,6 +141,8 @@ public class GuiController {
         }
     }
 
+    // todo: сделать сохранение модели до и после преобразований
+    // todo: также нужно добавить кнопки для масштабирования, поворота и перемещения
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
@@ -168,91 +175,91 @@ public class GuiController {
 
     @FXML
     public void increaseScaleX(ActionEvent actionEvent) {
-        scaleX += 0.1F;
+        scaleX += SCALE;
     }
 
     @FXML
     public void decreaseScaleX(ActionEvent actionEvent) {
-        scaleX -= 0.1F;
+        scaleX -= SCALE;
     }
 
     @FXML
     public void increaseScaleY(ActionEvent actionEvent) {
-        scaleY += 0.1F;
+        scaleY += SCALE;
     }
 
     @FXML
     public void decreaseScaleY(ActionEvent actionEvent) {
-        scaleY -= 0.1F;
+        scaleY -= SCALE;
     }
 
     @FXML
     public void increaseScaleZ(ActionEvent actionEvent) {
-        scaleZ += 0.1F;
+        scaleZ += SCALE;
     }
 
     @FXML
     public void decreaseScaleZ(ActionEvent actionEvent) {
-        scaleZ -= 0.1F;
+        scaleZ -= SCALE;
     }
 
     @FXML
     public void increaseTheta(ActionEvent actionEvent) {
-        theta += 0.1F;
+        theta += ROTATE;
     }
 
     @FXML
     public void decreaseTheta(ActionEvent actionEvent) {
-        theta -= 0.1F;
+        theta -= ROTATE;
     }
 
     @FXML
     public void increasePsi(ActionEvent actionEvent) {
-        psi += 0.1F;
+        psi += ROTATE;
     }
 
     @FXML
     public void decreasePsi(ActionEvent actionEvent) {
-        psi -= 0.1F;
+        psi -= ROTATE;
     }
 
     @FXML
     public void increasePhi(ActionEvent actionEvent) {
-        phi += 0.1F;
+        phi += ROTATE;
     }
 
     @FXML
     public void decreasePhi(ActionEvent actionEvent) {
-        phi -= 0.1F;
+        phi -= ROTATE;
     }
 
     @FXML
     public void increaseTranslateX(ActionEvent actionEvent) {
-        translationVector = new Vector3f(translationVector.x + 0.1F, translationVector.y, translationVector.z);
+        translateX += TRANSLATION;
     }
 
     @FXML
     public void decreaseTranslateX(ActionEvent actionEvent) {
-        translationVector = new Vector3f(translationVector.x - 0.1F, translationVector.y, translationVector.z);
+        translateX -= TRANSLATION;
     }
 
     @FXML
     public void increaseTranslateY(ActionEvent actionEvent) {
-        translationVector = new Vector3f(translationVector.x, translationVector.y + 0.1F, translationVector.z);
+        translateY += TRANSLATION;
     }
 
     @FXML
     public void decreaseTranslateY(ActionEvent actionEvent) {
-        translationVector = new Vector3f(translationVector.x, translationVector.y - 0.1F, translationVector.z);
+        translateY -= TRANSLATION;
     }
 
     @FXML
     public void increaseTranslateZ(ActionEvent actionEvent) {
-        translationVector = new Vector3f(translationVector.x, translationVector.y, translationVector.z + 0.1F);
+        translateZ += TRANSLATION;
     }
 
     @FXML
     public void decreaseTranslateZ(ActionEvent actionEvent) {
-        translationVector = new Vector3f(translationVector.x, translationVector.y, translationVector.z - 0.1F);
+        translateZ -= TRANSLATION;
     }
 }

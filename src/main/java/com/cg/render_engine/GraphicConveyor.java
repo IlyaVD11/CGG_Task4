@@ -11,7 +11,9 @@ public class GraphicConveyor {
             float theta,
             float psi,
             float phi,
-            Vector3f translationVector
+            float translateX,
+            float translateY,
+            float translateZ
     ) {
         Matrix4x4 scaleMatrix = new Matrix4x4();
         scaleMatrix.createMatrix4x4(
@@ -49,9 +51,9 @@ public class GraphicConveyor {
 
         Matrix4x4 translationMatrix = new Matrix4x4();
         translationMatrix.createMatrix4x4(
-                1, 0, 0, translationVector.x,
-                0, 1, 0, translationVector.y,
-                0, 0, 1, translationVector.z,
+                1, 0, 0, translateX,
+                0, 1, 0, translateY,
+                0, 0, 1, translateZ,
                 0, 0, 0, 1
         );
 

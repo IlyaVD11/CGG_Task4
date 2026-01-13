@@ -8,7 +8,6 @@ import com.cg.render_engine.RenderEngine;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -126,34 +125,54 @@ public class GuiController {
         updateUI();
     }
 
-    private void loadFromTextField() {
-        try {
-            scaleX = Float.parseFloat(txtScaleX.getText());
-            scaleY = Float.parseFloat(txtScaleY.getText());
-            scaleZ = Float.parseFloat(txtScaleZ.getText());
+    private void scaleXChange() {
+        scaleX = Float.parseFloat(txtScaleX.getText());
+    }
 
-            theta = Float.parseFloat(txtTheta.getText());
-            psi = Float.parseFloat(txtPsi.getText());
-            phi = Float.parseFloat(txtPhi.getText());
+    private void scaleYChange() {
+        scaleY = Float.parseFloat(txtScaleY.getText());
+    }
 
-            translateX = Float.parseFloat(txtTranslateX.getText());
-            translateY = Float.parseFloat(txtTranslateY.getText());
-            translateZ = Float.parseFloat(txtTranslateZ.getText());
-        } catch (Exception ignored) {
+    private void scaleZChange() {
+        scaleZ = Float.parseFloat(txtScaleZ.getText());
+    }
 
-        }
+    private void thetaChange() {
+        theta = Float.parseFloat(txtTheta.getText());
+    }
+
+    private void psiChange() {
+        psi = Float.parseFloat(txtPsi.getText());
+    }
+
+    private void phiChange() {
+        phi = Float.parseFloat(txtPhi.getText());
+    }
+
+    private void translateXChange() {
+        translateX = Float.parseFloat(txtTranslateX.getText());
+    }
+
+    private void translateYChange() {
+        translateY = Float.parseFloat(txtTranslateY.getText());
+    }
+
+    private void translateZChange() {
+        translateZ = Float.parseFloat(txtTranslateZ.getText());
     }
 
     private void updateUI() {
-        TextField[] fields = {
-                txtScaleX, txtScaleY, txtScaleZ,
-                txtTheta, txtPsi, txtPhi,
-                txtTranslateX, txtTranslateY, txtTranslateZ
-        };
-        ChangeListener<String> listener = (observable, oldValue, newValue) -> loadFromTextField();
-        for (TextField field : fields) {
-            field.textProperty().addListener(listener);
-        }
+        txtScaleX.textProperty().addListener((observable, oldValue, newValue) -> scaleXChange());
+        txtScaleY.textProperty().addListener((observable, oldValue, newValue) -> scaleYChange());
+        txtScaleZ.textProperty().addListener((observable, oldValue, newValue) -> scaleZChange());
+
+        txtTheta.textProperty().addListener((observable, oldValue, newValue) -> thetaChange());
+        txtPsi.textProperty().addListener((observable, oldValue, newValue) -> psiChange());
+        txtPhi.textProperty().addListener((observable, oldValue, newValue) -> phiChange());
+
+        txtTranslateX.textProperty().addListener((observable, oldValue, newValue) -> translateXChange());
+        txtTranslateY.textProperty().addListener((observable, oldValue, newValue) -> translateYChange());
+        txtTranslateZ.textProperty().addListener((observable, oldValue, newValue) -> translateZChange());
     }
 
     private void handleMousePress(MouseEvent mouseEvent) {
@@ -168,10 +187,15 @@ public class GuiController {
         if (isDragging) {
             float dx = (float) (mouseEvent.getX() - mouseX);
             float dy = (float) (mouseEvent.getY() - mouseY);
-            mouseX = mouseEvent.getX();
-            mouseY = mouseEvent.getY();
+            float sensitivity = 0.005F;
+
+            psi += dx * sensitivity;
+            theta += dy * sensitivity;
 
             camera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
+
+            mouseX = mouseEvent.getX();
+            mouseY = mouseEvent.getY();
         }
     }
 

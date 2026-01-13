@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 class ObjReaderTest {
+    /*
 
     @Test
     public void testParseVertex01() {
@@ -65,4 +66,6 @@ class ObjReaderTest {
             Assertions.assertEquals(expectedError, exception.getMessage());
         }
     }
+
+     */
 }

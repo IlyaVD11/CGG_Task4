@@ -47,11 +47,12 @@ public class Vector4f {
             y = 0.0f;
             z = 0.0f;
             w = 0.0f;
+        } else {
+            x /= length;
+            y /= length;
+            z /= length;
+            w /= length;
         }
-        x /= length;
-        y /= length;
-        z /= length;
-        w /= length;
     }
 
     public float dotProduct(Vector4f other) {

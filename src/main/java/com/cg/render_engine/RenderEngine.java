@@ -4,9 +4,10 @@ import com.cg.math.*;
 import com.cg.model.Model;
 import com.cg.model.Polygon;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class RenderEngine {
@@ -18,7 +19,7 @@ public class RenderEngine {
             final int width,
             final int height,
             final Matrix4x4 modelMatrix,
-            // Параметры режимов (Пункт 4)
+            // Твои параметры из GuiController:
             boolean drawWireframe,
             boolean useTexture,
             boolean useLighting,
@@ -28,49 +29,66 @@ public class RenderEngine {
         Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
         Matrix4x4 modelViewProjectionMatrix = projectionMatrix.multiply(viewMatrix).multiply(modelMatrix);
 
-        // ПУНКТ 2: Инициализация Z-буфера
+        // Инициализируем Z-буфер (чтобы задние полигоны не перекрывали передние)
         float[] zBuffer = new float[width * height];
         Arrays.fill(zBuffer, Float.NEGATIVE_INFINITY);
-        PixelWriter pw = graphicsContext.getPixelWriter();
+        PixelWriter pixelWriter = graphicsContext.getPixelWriter();
 
         for (Polygon polygon : mesh.polygons) {
-            processTriangle(polygon, mesh, modelViewProjectionMatrix, modelMatrix, camera,
-                    width, height, zBuffer, pw, drawWireframe, useTexture, useLighting, texture);
+            // Рисуем каждый треугольник
+            renderTriangle(polygon, mesh, modelViewProjectionMatrix, modelMatrix, camera,
+                    width, height, zBuffer, pixelWriter, graphicsContext,
+                    drawWireframe, useTexture, useLighting, texture);
         }
     }
 
-    private static void processTriangle(Polygon poly, Model mesh, Matrix4x4 mvp, Matrix4x4 modelMat, Camera cam,
-                                        int w, int h, float[] zBuf, PixelWriter pw,
-                                        boolean wire, boolean tex, boolean light, Image texture) {
+    private static void renderTriangle(
+            Polygon poly, Model mesh, Matrix4x4 mvp, Matrix4x4 modelMat, Camera cam,
+            int w, int h, float[] zBuf, PixelWriter pw, GraphicsContext gc,
+            boolean wire, boolean tex, boolean light, Image texture) {
 
-        var vIdx = poly.getVertexIndices();
-        Vector4f[] screenV = new Vector4f[3];
-        Vector3f[] worldV = new Vector3f[3];
-        Vector3f[] normals = new Vector3f[3];
-        Vector2f[] uvs = new Vector2f[3];
+        ArrayList<Integer> vIdx = poly.getVertexIndices();
+        Vector4f[] screenV = new Vector4f[3]; // Вершины в экранных координатах
+        Vector3f[] worldV = new Vector3f[3];  // Вершины в мировых (для света)
 
+        // 1. Подготовка координат
         for (int i = 0; i < 3; i++) {
             Vector3f v = mesh.vertices.get(vIdx.get(i));
-            worldV[i] = modelMat.multiplyOnVector(new Vector4f(v.x, v.y, v.z, 1)).toVector3f(); // Нужен метод в Vector4f или руками
 
+            // Мировые координаты (ручное исправление ошибки toVector3f)
+            Vector4f vWorld4 = modelMat.multiplyOnVector(new Vector4f(v.x, v.y, v.z, 1.0f));
+            worldV[i] = new Vector3f(vWorld4.x, vWorld4.y, vWorld4.z);
+
+            // Проекция на экран
             screenV[i] = mvp.multiplyOnVector(new Vector4f(v.x, v.y, v.z, 1.0f));
             float invW = 1.0f / screenV[i].w;
             screenV[i].x *= invW; screenV[i].y *= invW; screenV[i].z *= invW;
 
-            // Преобразование в экранные координаты
             Vector2f p = GraphicConveyor.vertexToPoint(new Vector3f(screenV[i].x, screenV[i].y, screenV[i].z), w, h);
-            screenV[i].x = p.x; screenV[i].y = p.y;
-
-            if (light) normals[i] = mesh.normals.get(poly.getNormalIndices().get(i));
-            if (tex) uvs[i] = mesh.textureVertices.get(poly.getTextureVertexIndices().get(i));
+            screenV[i].x = p.x;
+            screenV[i].y = p.y;
         }
 
-        // Отрисовка сетки (Пункт 4)
+        // 2. Отрисовка заливки (Текстура или Цвет + Свет)
+        // Если хоть одна галочка (текстура или свет) включена — запускаем растеризатор
+        if (tex || light || (!wire)) {
+            drawFilledTriangle(screenV, worldV, poly, mesh, cam, w, h, zBuf, pw, tex, light, texture);
+        }
+
+        // 3. Отрисовка сетки (Пункт 4: Галочка Wireframe)
         if (wire) {
-            pw.setColor((int)screenV[0].x, (int)screenV[0].y, Color.BLACK); // Упрощенно
+            gc.setStroke(Color.BLACK);
+            gc.setLineWidth(1);
+            gc.strokeLine(screenV[0].x, screenV[0].y, screenV[1].x, screenV[1].y);
+            gc.strokeLine(screenV[1].x, screenV[1].y, screenV[2].x, screenV[2].y);
+            gc.strokeLine(screenV[2].x, screenV[2].y, screenV[0].x, screenV[0].y);
         }
+    }
 
-        // ПУНКТ 2 & 3: Растеризация треугольника через барицентрические координаты
+    private static void drawFilledTriangle(Vector4f[] screenV, Vector3f[] worldV, Polygon poly, Model mesh, Camera cam,
+                                           int w, int h, float[] zBuf, PixelWriter pw,
+                                           boolean tex, boolean light, Image texture) {
+        // Ограничивающий прямоугольник (Bounding Box)
         int minX = (int) Math.max(0, Math.min(screenV[0].x, Math.min(screenV[1].x, screenV[2].x)));
         int maxX = (int) Math.min(w - 1, Math.max(screenV[0].x, Math.max(screenV[1].x, screenV[2].x)));
         int minY = (int) Math.max(0, Math.min(screenV[0].y, Math.min(screenV[1].y, screenV[2].y)));
@@ -86,39 +104,39 @@ public class RenderEngine {
                     if (z > zBuf[y * w + x]) {
                         zBuf[y * w + x] = z;
 
-                        Color finalColor = Color.GRAY;
+                        Color color = Color.LIGHTGRAY; // Базовый цвет если ничего не выбрано
 
-                        // ПУНКТ 3: Текстурирование
-                        if (tex && texture != null) {
-                            float u = bary.x * uvs[0].x + bary.y * uvs[1].x + bary.z * uvs[2].x;
-                            float v = bary.x * uvs[0].y + bary.y * uvs[1].y + bary.z * uvs[2].y;
-                            finalColor = texture.getPixelReader().getColor(
+                        // ПУНКТ 3: Текстура
+                        if (tex && texture != null && !poly.getTextureVertexIndices().isEmpty()) {
+                            Vector2f t0 = mesh.textureVertices.get(poly.getTextureVertexIndices().get(0));
+                            Vector2f t1 = mesh.textureVertices.get(poly.getTextureVertexIndices().get(1));
+                            Vector2f t2 = mesh.textureVertices.get(poly.getTextureVertexIndices().get(2));
+                            float u = bary.x * t0.x + bary.y * t1.x + bary.z * t2.x;
+                            float v = bary.x * t0.y + bary.y * t1.y + bary.z * t2.y;
+                            color = texture.getPixelReader().getColor(
                                     (int)(u * (texture.getWidth()-1)),
                                     (int)((1-v) * (texture.getHeight()-1))
                             );
                         }
 
-                        // ПУНКТ 3: Освещение (Ламберт)
-                        if (light) {
-                            Vector3f interpolatedNormal = new Vector3f(
-                                    bary.x * normals[0].x + bary.y * normals[1].x + bary.z * normals[2].x,
-                                    bary.x * normals[0].y + bary.y * normals[1].y + bary.z * normals[2].y,
-                                    bary.x * normals[0].z + bary.y * normals[1].z + bary.z * normals[2].z
+                        // ПУНКТ 3: Освещение
+                        if (light && !poly.getNormalIndices().isEmpty()) {
+                            Vector3f n0 = mesh.normals.get(poly.getNormalIndices().get(0));
+                            Vector3f n1 = mesh.normals.get(poly.getNormalIndices().get(1));
+                            Vector3f n2 = mesh.normals.get(poly.getNormalIndices().get(2));
+                            Vector3f normal = new Vector3f(
+                                    bary.x * n0.x + bary.y * n1.x + bary.z * n2.x,
+                                    bary.x * n0.y + bary.y * n1.y + bary.z * n2.y,
+                                    bary.x * n0.z + bary.y * n1.z + bary.z * n2.z
                             );
-                            interpolatedNormal.normalize();
-
-                            Vector3f lightDir = cam.getPosition().subtraction(worldV[0]); // Источник света в камере
+                            normal.normalize();
+                            Vector3f lightDir = cam.getPosition().subtraction(worldV[0]);
                             lightDir.normalize();
-
-                            float intensity = Math.max(0.1f, interpolatedNormal.dotProduct(lightDir));
-                            finalColor = Color.color(
-                                    finalColor.getRed() * intensity,
-                                    finalColor.getGreen() * intensity,
-                                    finalColor.getBlue() * intensity
-                            );
+                            float intensity = Math.max(0.2f, normal.dotProduct(lightDir));
+                            color = Color.color(color.getRed()*intensity, color.getGreen()*intensity, color.getBlue()*intensity);
                         }
 
-                        pw.setColor(x, y, finalColor);
+                        pw.setColor(x, y, color);
                     }
                 }
             }

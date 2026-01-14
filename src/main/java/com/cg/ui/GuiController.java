@@ -23,7 +23,7 @@ import javafx.util.Duration;
 
 import com.cg.math.*;
 
-import java.awt.*;
+import javafx.scene.image.Image;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -248,6 +248,8 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
+            mesh.triangulate();
+            mesh.recalculateNormals();
             // todo: обработка ошибок
         } catch (IOException exception) {
 

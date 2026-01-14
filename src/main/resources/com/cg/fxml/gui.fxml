@@ -19,9 +19,43 @@
                 </accelerator>
             </MenuItem>
         </Menu>
+        <Menu mnemonicParsing="false" text="Camera Options">
+            <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="UP"/>
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="DOWN"/>
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="LEFT"/>
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="RIGHT"/>
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="W"/>
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="S"/>
+                </accelerator>
+            </MenuItem>
+        </Menu>
     </MenuBar>
-    
-    <VBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0" spacing="5.0" style="-fx-background-color: white; -fx-padding: 10;">
+
+    <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
+
+    <VBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0" spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-padding: 10; -fx-background-radius: 5;">
         <Label text="Scale X/Y/Z"/>
         <TextField fx:id="txtScaleX" text="1.0"/>
         <TextField fx:id="txtScaleY" text="1.0"/>
@@ -38,5 +72,4 @@
         <TextField fx:id="txtTranslateZ" text="0.0"/>
     </VBox>
 
-    <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
 </AnchorPane>

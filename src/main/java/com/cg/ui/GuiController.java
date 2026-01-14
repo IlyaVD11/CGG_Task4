@@ -118,6 +118,9 @@ public class GuiController {
         timeline.getKeyFrames().add(frame);
         timeline.play();
 
+        canvas.setFocusTraversable(true);
+        canvas.setOnMouseClicked(event -> canvas.requestFocus());
+
         canvas.setOnMousePressed(this::handleMousePress);
         canvas.setOnMouseDragged(this::handleMouseDragged);
         canvas.setOnMouseReleased(this::handleMouseRelease);

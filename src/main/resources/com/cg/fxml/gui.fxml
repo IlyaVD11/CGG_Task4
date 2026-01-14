@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.CheckBox?>
 
 <AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cg.ui.GuiController">
     <MenuBar AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -52,9 +53,7 @@
             </MenuItem>
         </Menu>
     </MenuBar>
-
     <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
-
     <VBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0" spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-padding: 10; -fx-background-radius: 5;">
         <Label text="Scale X/Y/Z"/>
         <TextField fx:id="txtScaleX" text="1.0"/>
@@ -70,6 +69,11 @@
         <TextField fx:id="txtTranslateX" text="0.0"/>
         <TextField fx:id="txtTranslateY" text="0.0"/>
         <TextField fx:id="txtTranslateZ" text="0.0"/>
+
+        <Label text="Render Options"/>
+        <CheckBox fx:id="cbWireframe" text="Wireframe" selected="true"/>
+        <CheckBox fx:id="cbTexture" text="Use Texture" />
+        <CheckBox fx:id="cbLighting" text="Use Lighting" />
     </VBox>
 
 </AnchorPane>

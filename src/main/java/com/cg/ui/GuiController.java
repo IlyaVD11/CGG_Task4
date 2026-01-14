@@ -8,6 +8,7 @@ import com.cg.render_engine.RenderEngine;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ import javafx.util.Duration;
 
 import com.cg.math.*;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,6 +68,14 @@ public class GuiController {
 
     private Model mesh = null;
 
+    @FXML
+    private CheckBox cbWireframe;
+    @FXML
+    private CheckBox cbTexture;
+    @FXML
+    private CheckBox cbLighting;
+
+    private Image texture = null;
     private Camera camera = new Camera(
             new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
@@ -111,7 +121,18 @@ public class GuiController {
                         theta, psi, phi,
                         translateX, translateY, translateZ
                 );
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height, modelMatrix);
+                RenderEngine.render(
+                        canvas.getGraphicsContext2D(),
+                        camera,
+                        mesh,
+                        (int) width,
+                        (int) height,
+                        modelMatrix,
+                        cbWireframe.isSelected(),
+                        cbTexture.isSelected(),
+                        cbLighting.isSelected(),
+                        texture
+                );
             }
         });
 

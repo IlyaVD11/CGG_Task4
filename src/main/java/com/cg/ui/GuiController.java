@@ -12,6 +12,9 @@ import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -53,6 +56,10 @@ public class GuiController {
     private Camera activeCamera;
 
     private Timeline timeline;
+
+    private double mouseX;
+    private double mouseY;
+    private boolean isDragging = false;
 
     @FXML
     private void initialize() {
@@ -107,6 +114,14 @@ public class GuiController {
         timeline.getKeyFrames().add(frame);
         timeline.play();
 
+        canvas.setFocusTraversable(true);
+        canvas.setOnMouseClicked(event -> canvas.requestFocus());
+
+        canvas.setOnMousePressed(this::handleMousePress);
+        canvas.setOnMouseDragged(this::handleMouseDragged);
+        canvas.setOnMouseReleased(this::handleMouseRelease);
+        canvas.setOnScroll(this::handleOnScroll);
+
         updateUI();
 
         objectsList.setItems(sceneObjects);
@@ -120,11 +135,9 @@ public class GuiController {
         if (activeCamera != null) {
             Vector3f pos = activeCamera.getPosition();
             Vector3f target = activeCamera.getTarget();
-
             if (!txtCamPosX.isFocused()) txtCamPosX.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.x));
             if (!txtCamPosY.isFocused()) txtCamPosY.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.y));
             if (!txtCamPosZ.isFocused()) txtCamPosZ.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.z));
-
             if (!txtCamTargetX.isFocused()) txtCamTargetX.setText(String.format(java.util.Locale.ROOT, "%.2f", target.x));
             if (!txtCamTargetY.isFocused()) txtCamTargetY.setText(String.format(java.util.Locale.ROOT, "%.2f", target.y));
             if (!txtCamTargetZ.isFocused()) txtCamTargetZ.setText(String.format(java.util.Locale.ROOT, "%.2f", target.z));
@@ -149,6 +162,46 @@ public class GuiController {
         }
     }
 
+    private void handleMousePress(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+            mouseX = mouseEvent.getX();
+            mouseY = mouseEvent.getY();
+            isDragging = true;
+        }
+    }
+
+    private void handleMouseDragged(MouseEvent mouseEvent) {
+        if (isDragging) {
+            float dx = (float) (mouseEvent.getX() - mouseX);
+            float dy = (float) (mouseEvent.getY() - mouseY);
+            float sensitivity = 0.005F;
+
+            if (selectedObject != null) {
+                selectedObject.getRotation().y += dx * sensitivity;
+                selectedObject.getRotation().x += dy * sensitivity;
+                fillTextFields(selectedObject);
+            }
+
+            if (activeCamera != null) {
+                activeCamera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
+            }
+
+            mouseX = mouseEvent.getX();
+            mouseY = mouseEvent.getY();
+        }
+    }
+
+    private void handleMouseRelease(MouseEvent mouseEvent) {
+        isDragging = false;
+    }
+
+    private void handleOnScroll(ScrollEvent mouseEvent) {
+        float zoomStep = (float) (mouseEvent.getDeltaY() / 100.0F);
+        if (activeCamera != null) {
+            activeCamera.movePosition(new Vector3f(0.0F, 0.0F, zoomStep));
+        }
+    }
+
     private void fillTextFields(RenderObject obj) {
         txtScaleX.setText(String.valueOf(obj.getScale().x));
         txtScaleY.setText(String.valueOf(obj.getScale().y));
@@ -161,23 +214,23 @@ public class GuiController {
         txtTranslateZ.setText(String.valueOf(obj.getPosition().z));
     }
 
-    private void scaleXChange() { if (selectedObject != null) try { selectedObject.getScale().x = Float.parseFloat(txtScaleX.getText()); } catch (Exception e) {} }
-    private void scaleYChange() { if (selectedObject != null) try { selectedObject.getScale().y = Float.parseFloat(txtScaleY.getText()); } catch (Exception e) {} }
-    private void scaleZChange() { if (selectedObject != null) try { selectedObject.getScale().z = Float.parseFloat(txtScaleZ.getText()); } catch (Exception e) {} }
-    private void thetaChange() { if (selectedObject != null) try { selectedObject.getRotation().x = Float.parseFloat(txtTheta.getText()); } catch (Exception e) {} }
-    private void psiChange() { if (selectedObject != null) try { selectedObject.getRotation().y = Float.parseFloat(txtPsi.getText()); } catch (Exception e) {} }
-    private void phiChange() { if (selectedObject != null) try { selectedObject.getRotation().z = Float.parseFloat(txtPhi.getText()); } catch (Exception e) {} }
-    private void translateXChange() { if (selectedObject != null) try { selectedObject.getPosition().x = Float.parseFloat(txtTranslateX.getText()); } catch (Exception e) {} }
-    private void translateYChange() { if (selectedObject != null) try { selectedObject.getPosition().y = Float.parseFloat(txtTranslateY.getText()); } catch (Exception e) {} }
-    private void translateZChange() { if (selectedObject != null) try { selectedObject.getPosition().z = Float.parseFloat(txtTranslateZ.getText()); } catch (Exception e) {} }
+    private void scaleXChange() { if (selectedObject != null) try { selectedObject.getScale().x = Float.parseFloat(txtScaleX.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void scaleYChange() { if (selectedObject != null) try { selectedObject.getScale().y = Float.parseFloat(txtScaleY.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void scaleZChange() { if (selectedObject != null) try { selectedObject.getScale().z = Float.parseFloat(txtScaleZ.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void thetaChange() { if (selectedObject != null) try { selectedObject.getRotation().x = Float.parseFloat(txtTheta.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void psiChange() { if (selectedObject != null) try { selectedObject.getRotation().y = Float.parseFloat(txtPsi.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void phiChange() { if (selectedObject != null) try { selectedObject.getRotation().z = Float.parseFloat(txtPhi.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void translateXChange() { if (selectedObject != null) try { selectedObject.getPosition().x = Float.parseFloat(txtTranslateX.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void translateYChange() { if (selectedObject != null) try { selectedObject.getPosition().y = Float.parseFloat(txtTranslateY.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void translateZChange() { if (selectedObject != null) try { selectedObject.getPosition().z = Float.parseFloat(txtTranslateZ.getText().replace(',', '.')); } catch (Exception e) {} }
 
     private void camPosChange() {
         if (activeCamera != null) {
             try {
                 activeCamera.setPosition(new Vector3f(
-                        Float.parseFloat(txtCamPosX.getText()),
-                        Float.parseFloat(txtCamPosY.getText()),
-                        Float.parseFloat(txtCamPosZ.getText())
+                        Float.parseFloat(txtCamPosX.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamPosY.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamPosZ.getText().replace(',', '.'))
                 ));
             } catch (Exception e) {}
         }
@@ -187,9 +240,9 @@ public class GuiController {
         if (activeCamera != null) {
             try {
                 activeCamera.setTarget(new Vector3f(
-                        Float.parseFloat(txtCamTargetX.getText()),
-                        Float.parseFloat(txtCamTargetY.getText()),
-                        Float.parseFloat(txtCamTargetZ.getText())
+                        Float.parseFloat(txtCamTargetX.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamTargetY.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamTargetZ.getText().replace(',', '.'))
                 ));
             } catch (Exception e) {}
         }
@@ -244,26 +297,26 @@ public class GuiController {
 
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
-        activeCamera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, 0, -TRANSLATION));
     }
     @FXML
     public void handleCameraBackward(ActionEvent actionEvent) {
-        activeCamera.movePosition(new Vector3f(0, 0, TRANSLATION));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, 0, TRANSLATION));
     }
     @FXML
     public void handleCameraLeft(ActionEvent actionEvent) {
-        activeCamera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(TRANSLATION, 0, 0));
     }
     @FXML
     public void handleCameraRight(ActionEvent actionEvent) {
-        activeCamera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
     }
     @FXML
     public void handleCameraUp(ActionEvent actionEvent) {
-        activeCamera.movePosition(new Vector3f(0, TRANSLATION, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, TRANSLATION, 0));
     }
     @FXML
     public void handleCameraDown(ActionEvent actionEvent) {
-        activeCamera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, -TRANSLATION, 0));
     }
 }

@@ -1,79 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.CheckBox?>
 
 <AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cg.ui.GuiController">
-    <MenuBar AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="UP" shortcut="UP" code="F"/>
-                </accelerator>
-            </MenuItem>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Camera Options">
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="UP"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraBackward" text="Backward">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="DOWN"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraLeft" text="Left">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="LEFT"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraRight" text="Right">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="RIGHT"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraUp" text="Up">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="W"/>
-                </accelerator>
-            </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleCameraDown" text="Down">
-                <accelerator>
-                    <KeyCodeCombination alt="UP" control="UP" meta="UP" shift="UP" shortcut="UP" code="S"/>
-                </accelerator>
-            </MenuItem>
-        </Menu>
-    </MenuBar>
+
     <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
-    <VBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0" spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-padding: 10; -fx-background-radius: 5;">
-        <Label text="Scale X/Y/Z"/>
-        <TextField fx:id="txtScaleX" text="1.0"/>
-        <TextField fx:id="txtScaleY" text="1.0"/>
-        <TextField fx:id="txtScaleZ" text="1.0"/>
 
-        <Label text="Rotation (Theta/Psi/Phi)"/>
-        <TextField fx:id="txtTheta" text="0.0"/>
-        <TextField fx:id="txtPsi" text="0.0"/>
-        <TextField fx:id="txtPhi" text="0.0"/>
+    <HBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0" spacing="10.0">
+        <VBox spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 10; -fx-background-radius: 5; -fx-pref-width: 200;">
+            <Label text="MODELS" style="-fx-font-weight: bold;"/>
+            <Button text="Load Model" onAction="#onOpenModelMenuItemClick" maxWidth="Infinity"/>
+            <ListView fx:id="objectsList" prefHeight="120.0" />
+            <Button text="Delete Model" onAction="#handleDeleteModel" maxWidth="Infinity"/>
+            <Separator />
+            <Button text="Add Texture" onAction="#onOpenTextureMenuItemClick" maxWidth="Infinity"/>
+            <Button text="Delete Texture" onAction="#handleDeleteTexture" maxWidth="Infinity"/>
+            <Separator />
+            <Label text="Scale X/Y/Z"/>
+            <HBox spacing="2">
+                <TextField fx:id="txtScaleX" text="1.0" prefWidth="60"/>
+                <TextField fx:id="txtScaleY" text="1.0" prefWidth="60"/>
+                <TextField fx:id="txtScaleZ" text="1.0" prefWidth="60"/>
+            </HBox>
+            <Label text="Rotation X/Y/Z"/>
+            <HBox spacing="2">
+                <TextField fx:id="txtTheta" text="0.0" prefWidth="60"/>
+                <TextField fx:id="txtPsi" text="0.0" prefWidth="60"/>
+                <TextField fx:id="txtPhi" text="0.0" prefWidth="60"/>
+            </HBox>
+            <Label text="Translation X/Y/Z"/>
+            <HBox spacing="2">
+                <TextField fx:id="txtTranslateX" text="0.0" prefWidth="60"/>
+                <TextField fx:id="txtTranslateY" text="0.0" prefWidth="60"/>
+                <TextField fx:id="txtTranslateZ" text="0.0" prefWidth="60"/>
+            </HBox>
+            <Separator />
+            <CheckBox fx:id="cbWireframe" text="Wireframe" selected="true"/>
+            <CheckBox fx:id="cbTexture" text="Use Texture" />
+            <CheckBox fx:id="cbLighting" text="Use Lighting" />
+        </VBox>
 
-        <Label text="Translation X/Y/Z"/>
-        <TextField fx:id="txtTranslateX" text="0.0"/>
-        <TextField fx:id="txtTranslateY" text="0.0"/>
-        <TextField fx:id="txtTranslateZ" text="0.0"/>
-
-        <Label text="Render Options"/>
-        <CheckBox fx:id="cbWireframe" text="Wireframe" selected="true"/>
-        <CheckBox fx:id="cbTexture" text="Use Texture" />
-        <CheckBox fx:id="cbLighting" text="Use Lighting" />
-    </VBox>
-
+        <VBox spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 10; -fx-background-radius: 5; -fx-pref-width: 200;">
+            <Label text="CAMERAS" style="-fx-font-weight: bold;"/>
+            <Button text="Add Camera" onAction="#handleAddCamera" maxWidth="Infinity"/>
+            <ListView fx:id="camerasList" prefHeight="120.0" />
+            <Button text="Delete Camera" onAction="#handleRemoveCamera" maxWidth="Infinity"/>
+            <Separator />
+            <Label text="Position X/Y/Z"/>
+            <TextField fx:id="txtCamPosX" promptText="X"/>
+            <TextField fx:id="txtCamPosY" promptText="Y"/>
+            <TextField fx:id="txtCamPosZ" promptText="Z"/>
+            <Separator />
+            <Label text="Target X/Y/Z"/>
+            <TextField fx:id="txtCamTargetX" promptText="X"/>
+            <TextField fx:id="txtCamTargetY" promptText="Y"/>
+            <TextField fx:id="txtCamTargetZ" promptText="Z"/>
+        </VBox>
+    </HBox>
 </AnchorPane>

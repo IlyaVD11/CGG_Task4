@@ -23,6 +23,10 @@ import javafx.util.Duration;
 
 import com.cg.math.*;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import com.cg.scene.RenderObject;
+
 import javafx.scene.image.Image;
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +70,7 @@ public class GuiController {
     @FXML
     private TextField txtTranslateZ;
 
-    private Model mesh = null;
+    private ObservableList<RenderObject> sceneObjects = FXCollections.observableArrayList();
 
     @FXML
     private CheckBox cbWireframe;
@@ -114,24 +118,25 @@ public class GuiController {
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
-            if (mesh != null) {
+            for (RenderObject obj : sceneObjects) {
 
                 Matrix4x4 modelMatrix = GraphicConveyor.rotateScaleTranslate(
-                        scaleX, scaleY, scaleZ,
-                        theta, psi, phi,
-                        translateX, translateY, translateZ
+                        obj.getScale().x, obj.getScale().y, obj.getScale().z,
+                        obj.getRotation().x, obj.getRotation().y, obj.getRotation().z,
+                        obj.getPosition().x, obj.getPosition().y, obj.getPosition().z
                 );
+
                 RenderEngine.render(
                         canvas.getGraphicsContext2D(),
                         camera,
-                        mesh,
+                        obj.getMesh(),
                         (int) width,
                         (int) height,
                         modelMatrix,
                         cbWireframe.isSelected(),
                         cbTexture.isSelected(),
                         cbLighting.isSelected(),
-                        texture
+                        obj.getTexture()
                 );
             }
         });
@@ -247,17 +252,19 @@ public class GuiController {
 
         try {
             String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
+            Model mesh = ObjReader.read(fileContent);
+
             mesh.triangulate();
             mesh.recalculateNormals();
-            // todo: обработка ошибок
+
+            RenderObject newObject = new RenderObject(file.getName(), mesh);
+            sceneObjects.add(newObject);
+
         } catch (IOException exception) {
 
         }
     }
 
-    // todo: сделать сохранение модели до и после преобразований
-    // todo: также нужно добавить текстовые поля для масштабирования, поворота и перемещения
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, 0, -TRANSLATION));

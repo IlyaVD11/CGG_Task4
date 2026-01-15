@@ -312,8 +312,14 @@ public class GuiController {
     }
 
     private void handleOnScroll(ScrollEvent mouseEvent) {
-        float zoomStep = (float) (mouseEvent.getDeltaY() / 100.0F);
-        camera.movePosition(new Vector3f(0.0F, 0.0F, zoomStep));
+        float zoomSpeed = 2.5F;
+        if (mouseEvent.getDeltaY() > 0) {
+            cameraRadius = Math.max(1.0f, cameraRadius - zoomSpeed);
+        } else {
+            cameraRadius += zoomSpeed;
+        }
+
+        updateCameraPosition();
     }
 
     @FXML

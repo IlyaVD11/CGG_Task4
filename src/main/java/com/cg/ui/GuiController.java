@@ -12,9 +12,6 @@ import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -32,29 +29,30 @@ import java.util.ArrayList;
 
 public class GuiController {
 
+    final private float TRANSLATION = 1.0F;
+
     @FXML AnchorPane anchorPane;
     @FXML private Canvas canvas;
+
     @FXML private ListView<RenderObject> objectsList;
     @FXML private TextField txtScaleX, txtScaleY, txtScaleZ;
     @FXML private TextField txtTheta, txtPsi, txtPhi;
     @FXML private TextField txtTranslateX, txtTranslateY, txtTranslateZ;
+
     @FXML private ListView<String> camerasList;
     @FXML private TextField txtCamPosX, txtCamPosY, txtCamPosZ;
     @FXML private TextField txtCamTargetX, txtCamTargetY, txtCamTargetZ;
+
     @FXML private CheckBox cbWireframe, cbTexture, cbLighting;
 
     private ObservableList<RenderObject> sceneObjects = FXCollections.observableArrayList();
     private RenderObject selectedObject = null;
+
     private ArrayList<Camera> cameras = new ArrayList<>();
     private ObservableList<String> cameraNames = FXCollections.observableArrayList();
     private Camera activeCamera;
-    private Timeline timeline;
 
-    private float cameraRadius = 100.0F;
-    private float cameraAzimuth = 0.0F;
-    private float cameraZenith = 0.0F;
-    private double mouseX, mouseY;
-    private boolean isDragging = false;
+    private Timeline timeline;
 
     @FXML
     private void initialize() {
@@ -63,7 +61,7 @@ public class GuiController {
 
         Camera cam1 = new Camera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
         cameras.add(cam1);
-        cameraNames.add("Main Camera");
+        cameraNames.add("Camera 1");
         activeCamera = cam1;
 
         camerasList.setItems(cameraNames);
@@ -81,30 +79,36 @@ public class GuiController {
             double width = canvas.getWidth();
             double height = canvas.getHeight();
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            activeCamera.setAspectRatio((float) (width / height));
 
-            for (RenderObject obj : sceneObjects) {
-                Matrix4x4 modelMatrix = GraphicConveyor.rotateScaleTranslate(
-                        obj.getScale().x, obj.getScale().y, obj.getScale().z,
-                        obj.getRotation().x, obj.getRotation().y, obj.getRotation().z,
-                        obj.getPosition().x, obj.getPosition().y, obj.getPosition().z
-                );
-                RenderEngine.render(canvas.getGraphicsContext2D(), activeCamera, obj.getMesh(), (int) width, (int) height, modelMatrix,
-                        cbWireframe.isSelected(), cbTexture.isSelected(), cbLighting.isSelected(), obj.getTexture());
+            if (activeCamera != null) {
+                activeCamera.setAspectRatio((float) (width / height));
+
+                for (RenderObject obj : sceneObjects) {
+                    Matrix4x4 modelMatrix = GraphicConveyor.rotateScaleTranslate(
+                            obj.getScale().x, obj.getScale().y, obj.getScale().z,
+                            obj.getRotation().x, obj.getRotation().y, obj.getRotation().z,
+                            obj.getPosition().x, obj.getPosition().y, obj.getPosition().z
+                    );
+                    RenderEngine.render(
+                            canvas.getGraphicsContext2D(),
+                            activeCamera,
+                            obj.getMesh(),
+                            (int) width, (int) height,
+                            modelMatrix,
+                            cbWireframe.isSelected(),
+                            cbTexture.isSelected(),
+                            cbLighting.isSelected(),
+                            obj.getTexture()
+                    );
+                }
             }
             updateCameraTextFields();
         });
         timeline.getKeyFrames().add(frame);
         timeline.play();
 
-        canvas.setFocusTraversable(true);
-        canvas.setOnMouseClicked(event -> canvas.requestFocus());
-        canvas.setOnMousePressed(this::handleMousePress);
-        canvas.setOnMouseDragged(this::handleMouseDragged);
-        canvas.setOnMouseReleased(this::handleMouseRelease);
-        canvas.setOnScroll(this::handleOnScroll);
-
         updateUI();
+
         objectsList.setItems(sceneObjects);
         objectsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             selectedObject = newVal;
@@ -116,12 +120,14 @@ public class GuiController {
         if (activeCamera != null) {
             Vector3f pos = activeCamera.getPosition();
             Vector3f target = activeCamera.getTarget();
-            if (!txtCamPosX.isFocused()) txtCamPosX.setText(String.format("%.2f", pos.x));
-            if (!txtCamPosY.isFocused()) txtCamPosY.setText(String.format("%.2f", pos.y));
-            if (!txtCamPosZ.isFocused()) txtCamPosZ.setText(String.format("%.2f", pos.z));
-            if (!txtCamTargetX.isFocused()) txtCamTargetX.setText(String.format("%.2f", target.x));
-            if (!txtCamTargetY.isFocused()) txtCamTargetY.setText(String.format("%.2f", target.y));
-            if (!txtCamTargetZ.isFocused()) txtCamTargetZ.setText(String.format("%.2f", target.z));
+
+            if (!txtCamPosX.isFocused()) txtCamPosX.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.x));
+            if (!txtCamPosY.isFocused()) txtCamPosY.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.y));
+            if (!txtCamPosZ.isFocused()) txtCamPosZ.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.z));
+
+            if (!txtCamTargetX.isFocused()) txtCamTargetX.setText(String.format(java.util.Locale.ROOT, "%.2f", target.x));
+            if (!txtCamTargetY.isFocused()) txtCamTargetY.setText(String.format(java.util.Locale.ROOT, "%.2f", target.y));
+            if (!txtCamTargetZ.isFocused()) txtCamTargetZ.setText(String.format(java.util.Locale.ROOT, "%.2f", target.z));
         }
     }
 
@@ -138,10 +144,8 @@ public class GuiController {
         if (index >= 0 && cameras.size() > 1) {
             cameras.remove(index);
             cameraNames.remove(index);
-            if (activeCamera == null || index == camerasList.getSelectionModel().getSelectedIndex()) {
-                activeCamera = cameras.get(0);
-                camerasList.getSelectionModel().select(0);
-            }
+            activeCamera = cameras.get(0);
+            camerasList.getSelectionModel().select(0);
         }
     }
 
@@ -170,10 +174,11 @@ public class GuiController {
     private void camPosChange() {
         if (activeCamera != null) {
             try {
-                float x = Float.parseFloat(txtCamPosX.getText());
-                float y = Float.parseFloat(txtCamPosY.getText());
-                float z = Float.parseFloat(txtCamPosZ.getText());
-                activeCamera.setPosition(new Vector3f(x, y, z));
+                activeCamera.setPosition(new Vector3f(
+                        Float.parseFloat(txtCamPosX.getText()),
+                        Float.parseFloat(txtCamPosY.getText()),
+                        Float.parseFloat(txtCamPosZ.getText())
+                ));
             } catch (Exception e) {}
         }
     }
@@ -181,10 +186,11 @@ public class GuiController {
     private void camTargetChange() {
         if (activeCamera != null) {
             try {
-                float x = Float.parseFloat(txtCamTargetX.getText());
-                float y = Float.parseFloat(txtCamTargetY.getText());
-                float z = Float.parseFloat(txtCamTargetZ.getText());
-                activeCamera.setTarget(new Vector3f(x, y, z));
+                activeCamera.setTarget(new Vector3f(
+                        Float.parseFloat(txtCamTargetX.getText()),
+                        Float.parseFloat(txtCamTargetY.getText()),
+                        Float.parseFloat(txtCamTargetZ.getText())
+                ));
             } catch (Exception e) {}
         }
     }
@@ -206,43 +212,6 @@ public class GuiController {
         txtCamTargetX.textProperty().addListener((o, oldV, newV) -> camTargetChange());
         txtCamTargetY.textProperty().addListener((o, oldV, newV) -> camTargetChange());
         txtCamTargetZ.textProperty().addListener((o, oldV, newV) -> camTargetChange());
-    }
-
-    private void handleMousePress(MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-            mouseX = mouseEvent.getX(); mouseY = mouseEvent.getY();
-            isDragging = true;
-        }
-    }
-
-    private void handleMouseDragged(MouseEvent mouseEvent) {
-        if (isDragging) {
-            float dx = (float) (mouseEvent.getX() - mouseX);
-            float dy = (float) (mouseEvent.getY() - mouseY);
-            cameraAzimuth -= dx * 0.005F;
-            cameraZenith -= dy * 0.005F;
-            updateCameraPosition();
-            mouseX = mouseEvent.getX(); mouseY = mouseEvent.getY();
-        }
-    }
-
-    private void handleMouseRelease(MouseEvent mouseEvent) { isDragging = false; }
-
-    private void handleOnScroll(ScrollEvent mouseEvent) {
-        if (mouseEvent.getDeltaY() > 0) cameraRadius = Math.max(1.0f, cameraRadius - 2.5f);
-        else cameraRadius += 2.5f;
-        updateCameraPosition();
-    }
-
-    private void updateCameraPosition() {
-        cameraZenith = Math.max(-1.55f, Math.min(1.55f, cameraZenith));
-        float x = (float) (Math.sin(cameraAzimuth) * Math.cos(cameraZenith) * cameraRadius);
-        float y = (float) (Math.sin(cameraZenith) * cameraRadius);
-        float z = (float) (Math.cos(cameraAzimuth) * Math.cos(cameraZenith) * cameraRadius);
-        if (activeCamera != null) {
-            activeCamera.setPosition(new Vector3f(x, y, z));
-            activeCamera.setTarget(new Vector3f(0, 0, 0));
-        }
     }
 
     @FXML
@@ -272,4 +241,29 @@ public class GuiController {
 
     @FXML private void handleDeleteModel() { if (selectedObject != null) { sceneObjects.remove(selectedObject); selectedObject = null; } }
     @FXML private void handleDeleteTexture() { if (selectedObject != null) selectedObject.setTexture(null); }
+
+    @FXML
+    public void handleCameraForward(ActionEvent actionEvent) {
+        activeCamera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+    }
+    @FXML
+    public void handleCameraBackward(ActionEvent actionEvent) {
+        activeCamera.movePosition(new Vector3f(0, 0, TRANSLATION));
+    }
+    @FXML
+    public void handleCameraLeft(ActionEvent actionEvent) {
+        activeCamera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+    }
+    @FXML
+    public void handleCameraRight(ActionEvent actionEvent) {
+        activeCamera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+    }
+    @FXML
+    public void handleCameraUp(ActionEvent actionEvent) {
+        activeCamera.movePosition(new Vector3f(0, TRANSLATION, 0));
+    }
+    @FXML
+    public void handleCameraDown(ActionEvent actionEvent) {
+        activeCamera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+    }
 }

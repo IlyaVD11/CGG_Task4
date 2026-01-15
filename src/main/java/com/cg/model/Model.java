@@ -57,7 +57,7 @@ public class Model {
 
             Vector3f edge1 = v1.subtraction(v0);
             Vector3f edge2 = v2.subtraction(v0);
-            Vector3f polyNormal = edge1.crossProduct(edge2);
+            Vector3f polyNormal = edge2.crossProduct(edge1);
             polyNormal.normalize();
 
             for (Integer idx : vIdx) {

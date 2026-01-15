@@ -25,6 +25,8 @@ import com.cg.math.*;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
+import javafx.collections.ListChangeListener;
 import com.cg.scene.RenderObject;
 
 import javafx.scene.image.Image;
@@ -42,6 +44,9 @@ public class GuiController {
 
     @FXML
     private Canvas canvas;
+
+    @FXML
+    private ListView<RenderObject> objectsList;
 
     @FXML
     private TextField txtScaleX;
@@ -86,6 +91,8 @@ public class GuiController {
             1.0F, 1, 0.01F, 100);
 
     private Timeline timeline;
+
+    private RenderObject selectedObject = null;
 
     private float scaleX = 1.0F;
     private float scaleY = 1.0F;
@@ -151,43 +158,123 @@ public class GuiController {
         canvas.setOnMouseDragged(this::handleMouseDragged);
         canvas.setOnMouseReleased(this::handleMouseRelease);
         canvas.setOnScroll(this::handleOnScroll);
+
         updateUI();
+
+        objectsList.setItems(sceneObjects);
+
+        objectsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            selectedObject = newVal;
+            if (newVal != null) {
+                fillTextFields(newVal);
+            }
+        });
+
+        objectsList.setFocusTraversable(false);
+    }
+
+    private void fillTextFields(RenderObject obj) {
+        txtScaleX.setText(String.valueOf(obj.getScale().x));
+        txtScaleY.setText(String.valueOf(obj.getScale().y));
+        txtScaleZ.setText(String.valueOf(obj.getScale().z));
+
+        txtTheta.setText(String.valueOf(obj.getRotation().x));
+        txtPsi.setText(String.valueOf(obj.getRotation().y));
+        txtPhi.setText(String.valueOf(obj.getRotation().z));
+
+        txtTranslateX.setText(String.valueOf(obj.getPosition().x));
+        txtTranslateY.setText(String.valueOf(obj.getPosition().y));
+        txtTranslateZ.setText(String.valueOf(obj.getPosition().z));
     }
 
     private void scaleXChange() {
-        scaleX = Float.parseFloat(txtScaleX.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtScaleX.getText());
+                selectedObject.getScale().x = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void scaleYChange() {
-        scaleY = Float.parseFloat(txtScaleY.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtScaleY.getText());
+                selectedObject.getScale().y = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void scaleZChange() {
-        scaleZ = Float.parseFloat(txtScaleZ.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtScaleZ.getText());
+                selectedObject.getScale().z = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void thetaChange() {
-        theta = Float.parseFloat(txtTheta.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtTheta.getText());
+                selectedObject.getRotation().x = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void psiChange() {
-        psi = Float.parseFloat(txtPsi.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtPsi.getText());
+                selectedObject.getRotation().y = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void phiChange() {
-        phi = Float.parseFloat(txtPhi.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtPhi.getText());
+                selectedObject.getRotation().z = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void translateXChange() {
-        translateX = Float.parseFloat(txtTranslateX.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtTranslateX.getText());
+                selectedObject.getPosition().x = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void translateYChange() {
-        translateY = Float.parseFloat(txtTranslateY.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtTranslateY.getText());
+                selectedObject.getPosition().y = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void translateZChange() {
-        translateZ = Float.parseFloat(txtTranslateZ.getText());
+        if (selectedObject != null) {
+            try {
+                float value = Float.parseFloat(txtTranslateZ.getText());
+                selectedObject.getPosition().z = value;
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     private void updateUI() {

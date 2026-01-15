@@ -11,6 +11,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.CheckBox?>
 
+<?import javafx.scene.control.ListView?>
 <AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cg.ui.GuiController">
     <MenuBar AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <Menu mnemonicParsing="false" text="File">
@@ -55,6 +56,10 @@
     </MenuBar>
     <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
     <VBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0" spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.7); -fx-padding: 10; -fx-background-radius: 5;">
+
+        <Label text="Scene Objects" />
+        <ListView fx:id="objectsList" prefHeight="150.0" prefWidth="200.0" />
+
         <Label text="Scale X/Y/Z"/>
         <TextField fx:id="txtScaleX" text="1.0"/>
         <TextField fx:id="txtScaleY" text="1.0"/>

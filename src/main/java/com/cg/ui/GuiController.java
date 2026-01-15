@@ -94,17 +94,9 @@ public class GuiController {
 
     private RenderObject selectedObject = null;
 
-    private float scaleX = 1.0F;
-    private float scaleY = 1.0F;
-    private float scaleZ = 1.0F;
-
-    private float theta = 0.0F;
-    private float psi= 0.0F;
-    private float phi = 0.0F;
-
-    private float translateX = 0.0F;
-    private float translateY = 0.0F;
-    private float translateZ = 0.0F;
+    private float cameraRadius = 100.0F;
+    private float cameraAzimuth = 0.0F;
+    private float cameraZenith = 0.0F;
 
     private double mouseX;
     private double mouseY;
@@ -305,10 +297,10 @@ public class GuiController {
             float dy = (float) (mouseEvent.getY() - mouseY);
             float sensitivity = 0.005F;
 
-            psi += dx * sensitivity;
-            theta += dy * sensitivity;
+            cameraAzimuth -= dx * sensitivity;
+            cameraZenith -= dy * sensitivity;
 
-            camera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
+            updateCameraPosition();
 
             mouseX = mouseEvent.getX();
             mouseY = mouseEvent.getY();
@@ -350,6 +342,17 @@ public class GuiController {
         } catch (IOException exception) {
 
         }
+    }
+
+    private void updateCameraPosition() {
+        cameraZenith = Math.max(-1.55f, Math.min(1.55f, cameraZenith));
+
+        float x = (float) (Math.sin(cameraAzimuth) * Math.cos(cameraZenith) * cameraRadius);
+        float y = (float) (Math.sin(cameraZenith) * cameraRadius);
+        float z = (float) (Math.cos(cameraAzimuth) * Math.cos(cameraZenith) * cameraRadius);
+
+        camera.setPosition(new Vector3f(x, y, z));
+        camera.setTarget(new Vector3f(0, 0, 0));
     }
 
     @FXML

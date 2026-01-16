@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="23713e07-1d2b-4495-998b-48f452b16076" name="Changes" comment="Changes" />
+    <list default="true" id="23713e07-1d2b-4495-998b-48f452b16076" name="Changes" comment="AddTestConveyorAndFixCamera" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -42,7 +42,7 @@
     "JUnit.ObjWriterTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Math",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Dev/4 task kgg",
     "project.structure.last.edited": "Project",
@@ -186,11 +186,20 @@
       <option name="project" value="LOCAL" />
       <updated>1768543170229</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="AddTestConveyorAndFixCamera">
+      <option name="closed" value="true" />
+      <created>1768564150584</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768564150584</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changes" />
+    <MESSAGE value="AddTestConveyorAndFixCamera" />
+    <option name="LAST_COMMIT_MESSAGE" value="AddTestConveyorAndFixCamera" />
   </component>
 </project>

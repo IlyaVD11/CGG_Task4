@@ -8,7 +8,7 @@ import com.cg.render_engine.RenderEngine;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -19,71 +19,43 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import com.cg.math.*;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import com.cg.scene.RenderObject;
+import javafx.scene.image.Image;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 public class GuiController {
 
-    final private float TRANSLATION = 0.5F;
+    final private float TRANSLATION = 1.0F;
 
-    @FXML
-    AnchorPane anchorPane;
+    @FXML AnchorPane anchorPane;
+    @FXML private Canvas canvas;
 
-    @FXML
-    private Canvas canvas;
+    @FXML private ListView<RenderObject> objectsList;
+    @FXML private TextField txtScaleX, txtScaleY, txtScaleZ;
+    @FXML private TextField txtTheta, txtPsi, txtPhi;
+    @FXML private TextField txtTranslateX, txtTranslateY, txtTranslateZ;
 
-    @FXML
-    private TextField txtScaleX;
+    @FXML private ListView<String> camerasList;
+    @FXML private TextField txtCamPosX, txtCamPosY, txtCamPosZ;
+    @FXML private TextField txtCamTargetX, txtCamTargetY, txtCamTargetZ;
 
-    @FXML
-    private TextField txtScaleY;
+    @FXML private CheckBox cbWireframe, cbTexture, cbLighting;
 
-    @FXML
-    private TextField txtScaleZ;
+    private ObservableList<RenderObject> sceneObjects = FXCollections.observableArrayList();
+    private RenderObject selectedObject = null;
 
-    @FXML
-    private TextField txtTheta;
-
-    @FXML
-    private TextField txtPsi;
-
-    @FXML
-    private TextField txtPhi;
-
-    @FXML
-    private TextField txtTranslateX;
-
-    @FXML
-    private TextField txtTranslateY;
-
-    @FXML
-    private TextField txtTranslateZ;
-
-    private Model mesh = null;
-
-    private Camera camera = new Camera(
-            new Vector3f(0, 0, 100),
-            new Vector3f(0, 0, 0),
-            1.0F, 1, 0.01F, 100);
+    private ArrayList<Camera> cameras = new ArrayList<>();
+    private ObservableList<String> cameraNames = FXCollections.observableArrayList();
+    private Camera activeCamera;
 
     private Timeline timeline;
-
-    private float scaleX = 1.0F;
-    private float scaleY = 1.0F;
-    private float scaleZ = 1.0F;
-
-    private float theta = 0.0F;
-    private float psi= 0.0F;
-    private float phi = 0.0F;
-
-    private float translateX = 0.0F;
-    private float translateY = 0.0F;
-    private float translateZ = 0.0F;
 
     private double mouseX;
     private double mouseY;
@@ -94,85 +66,100 @@ public class GuiController {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
-        timeline = new Timeline();
-        timeline.setCycleCount(Animation.INDEFINITE);
+        Camera cam1 = new Camera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
+        cameras.add(cam1);
+        cameraNames.add("Camera 1");
+        activeCamera = cam1;
 
-        KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
-            double width = canvas.getWidth();
-            double height = canvas.getHeight();
-
-            canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
-            camera.setAspectRatio((float) (width / height));
-
-            if (mesh != null) {
-
-                Matrix4x4 modelMatrix = GraphicConveyor.rotateScaleTranslate(
-                        scaleX, scaleY, scaleZ,
-                        theta, psi, phi,
-                        translateX, translateY, translateZ
-                );
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height, modelMatrix);
+        camerasList.setItems(cameraNames);
+        camerasList.getSelectionModel().select(0);
+        camerasList.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.intValue() >= 0) {
+                activeCamera = cameras.get(newVal.intValue());
+                updateCameraTextFields();
             }
         });
 
+        timeline = new Timeline();
+        timeline.setCycleCount(Animation.INDEFINITE);
+        KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
+            double width = canvas.getWidth();
+            double height = canvas.getHeight();
+            canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+
+            if (activeCamera != null) {
+                activeCamera.setAspectRatio((float) (width / height));
+
+                for (RenderObject obj : sceneObjects) {
+                    Matrix4x4 modelMatrix = GraphicConveyor.rotateScaleTranslate(
+                            obj.getScale().x, obj.getScale().y, obj.getScale().z,
+                            obj.getRotation().x, obj.getRotation().y, obj.getRotation().z,
+                            obj.getPosition().x, obj.getPosition().y, obj.getPosition().z
+                    );
+                    RenderEngine.render(
+                            canvas.getGraphicsContext2D(),
+                            activeCamera,
+                            obj.getMesh(),
+                            (int) width, (int) height,
+                            modelMatrix,
+                            cbWireframe.isSelected(),
+                            cbTexture.isSelected(),
+                            cbLighting.isSelected(),
+                            obj.getTexture()
+                    );
+                }
+            }
+            updateCameraTextFields();
+        });
         timeline.getKeyFrames().add(frame);
         timeline.play();
+
+        canvas.setFocusTraversable(true);
+        canvas.setOnMouseClicked(event -> canvas.requestFocus());
 
         canvas.setOnMousePressed(this::handleMousePress);
         canvas.setOnMouseDragged(this::handleMouseDragged);
         canvas.setOnMouseReleased(this::handleMouseRelease);
         canvas.setOnScroll(this::handleOnScroll);
+
         updateUI();
+
+        objectsList.setItems(sceneObjects);
+        objectsList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            selectedObject = newVal;
+            if (newVal != null) fillTextFields(newVal);
+        });
     }
 
-    private void scaleXChange() {
-        scaleX = Float.parseFloat(txtScaleX.getText());
+    private void updateCameraTextFields() {
+        if (activeCamera != null) {
+            Vector3f pos = activeCamera.getPosition();
+            Vector3f target = activeCamera.getTarget();
+            if (!txtCamPosX.isFocused()) txtCamPosX.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.x));
+            if (!txtCamPosY.isFocused()) txtCamPosY.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.y));
+            if (!txtCamPosZ.isFocused()) txtCamPosZ.setText(String.format(java.util.Locale.ROOT, "%.2f", pos.z));
+            if (!txtCamTargetX.isFocused()) txtCamTargetX.setText(String.format(java.util.Locale.ROOT, "%.2f", target.x));
+            if (!txtCamTargetY.isFocused()) txtCamTargetY.setText(String.format(java.util.Locale.ROOT, "%.2f", target.y));
+            if (!txtCamTargetZ.isFocused()) txtCamTargetZ.setText(String.format(java.util.Locale.ROOT, "%.2f", target.z));
+        }
     }
 
-    private void scaleYChange() {
-        scaleY = Float.parseFloat(txtScaleY.getText());
+    @FXML
+    private void handleAddCamera() {
+        Camera newCam = new Camera(new Vector3f(0, 0, 100), new Vector3f(0, 0, 0), 1.0F, 1, 0.01F, 100);
+        cameras.add(newCam);
+        cameraNames.add("Camera " + cameras.size());
     }
 
-    private void scaleZChange() {
-        scaleZ = Float.parseFloat(txtScaleZ.getText());
-    }
-
-    private void thetaChange() {
-        theta = Float.parseFloat(txtTheta.getText());
-    }
-
-    private void psiChange() {
-        psi = Float.parseFloat(txtPsi.getText());
-    }
-
-    private void phiChange() {
-        phi = Float.parseFloat(txtPhi.getText());
-    }
-
-    private void translateXChange() {
-        translateX = Float.parseFloat(txtTranslateX.getText());
-    }
-
-    private void translateYChange() {
-        translateY = Float.parseFloat(txtTranslateY.getText());
-    }
-
-    private void translateZChange() {
-        translateZ = Float.parseFloat(txtTranslateZ.getText());
-    }
-
-    private void updateUI() {
-        txtScaleX.textProperty().addListener((observable, oldValue, newValue) -> scaleXChange());
-        txtScaleY.textProperty().addListener((observable, oldValue, newValue) -> scaleYChange());
-        txtScaleZ.textProperty().addListener((observable, oldValue, newValue) -> scaleZChange());
-
-        txtTheta.textProperty().addListener((observable, oldValue, newValue) -> thetaChange());
-        txtPsi.textProperty().addListener((observable, oldValue, newValue) -> psiChange());
-        txtPhi.textProperty().addListener((observable, oldValue, newValue) -> phiChange());
-
-        txtTranslateX.textProperty().addListener((observable, oldValue, newValue) -> translateXChange());
-        txtTranslateY.textProperty().addListener((observable, oldValue, newValue) -> translateYChange());
-        txtTranslateZ.textProperty().addListener((observable, oldValue, newValue) -> translateZChange());
+    @FXML
+    private void handleRemoveCamera() {
+        int index = camerasList.getSelectionModel().getSelectedIndex();
+        if (index >= 0 && cameras.size() > 1) {
+            cameras.remove(index);
+            cameraNames.remove(index);
+            activeCamera = cameras.get(0);
+            camerasList.getSelectionModel().select(0);
+        }
     }
 
     private void handleMousePress(MouseEvent mouseEvent) {
@@ -189,10 +176,15 @@ public class GuiController {
             float dy = (float) (mouseEvent.getY() - mouseY);
             float sensitivity = 0.005F;
 
-            psi += dx * sensitivity;
-            theta += dy * sensitivity;
+            if (selectedObject != null) {
+                selectedObject.getRotation().y += dx * sensitivity;
+                selectedObject.getRotation().x += dy * sensitivity;
+                fillTextFields(selectedObject);
+            }
 
-            camera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
+            if (activeCamera != null) {
+                activeCamera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
+            }
 
             mouseX = mouseEvent.getX();
             mouseY = mouseEvent.getY();
@@ -205,60 +197,126 @@ public class GuiController {
 
     private void handleOnScroll(ScrollEvent mouseEvent) {
         float zoomStep = (float) (mouseEvent.getDeltaY() / 100.0F);
-        camera.movePosition(new Vector3f(0.0F, 0.0F, zoomStep));
+        if (activeCamera != null) {
+            activeCamera.movePosition(new Vector3f(0.0F, 0.0F, zoomStep));
+        }
+    }
+
+    private void fillTextFields(RenderObject obj) {
+        txtScaleX.setText(String.valueOf(obj.getScale().x));
+        txtScaleY.setText(String.valueOf(obj.getScale().y));
+        txtScaleZ.setText(String.valueOf(obj.getScale().z));
+        txtTheta.setText(String.valueOf(obj.getRotation().x));
+        txtPsi.setText(String.valueOf(obj.getRotation().y));
+        txtPhi.setText(String.valueOf(obj.getRotation().z));
+        txtTranslateX.setText(String.valueOf(obj.getPosition().x));
+        txtTranslateY.setText(String.valueOf(obj.getPosition().y));
+        txtTranslateZ.setText(String.valueOf(obj.getPosition().z));
+    }
+
+    private void scaleXChange() { if (selectedObject != null) try { selectedObject.getScale().x = Float.parseFloat(txtScaleX.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void scaleYChange() { if (selectedObject != null) try { selectedObject.getScale().y = Float.parseFloat(txtScaleY.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void scaleZChange() { if (selectedObject != null) try { selectedObject.getScale().z = Float.parseFloat(txtScaleZ.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void thetaChange() { if (selectedObject != null) try { selectedObject.getRotation().x = Float.parseFloat(txtTheta.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void psiChange() { if (selectedObject != null) try { selectedObject.getRotation().y = Float.parseFloat(txtPsi.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void phiChange() { if (selectedObject != null) try { selectedObject.getRotation().z = Float.parseFloat(txtPhi.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void translateXChange() { if (selectedObject != null) try { selectedObject.getPosition().x = Float.parseFloat(txtTranslateX.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void translateYChange() { if (selectedObject != null) try { selectedObject.getPosition().y = Float.parseFloat(txtTranslateY.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void translateZChange() { if (selectedObject != null) try { selectedObject.getPosition().z = Float.parseFloat(txtTranslateZ.getText().replace(',', '.')); } catch (Exception e) {} }
+
+    private void camPosChange() {
+        if (activeCamera != null) {
+            try {
+                activeCamera.setPosition(new Vector3f(
+                        Float.parseFloat(txtCamPosX.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamPosY.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamPosZ.getText().replace(',', '.'))
+                ));
+            } catch (Exception e) {}
+        }
+    }
+
+    private void camTargetChange() {
+        if (activeCamera != null) {
+            try {
+                activeCamera.setTarget(new Vector3f(
+                        Float.parseFloat(txtCamTargetX.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamTargetY.getText().replace(',', '.')),
+                        Float.parseFloat(txtCamTargetZ.getText().replace(',', '.'))
+                ));
+            } catch (Exception e) {}
+        }
+    }
+
+    private void updateUI() {
+        txtScaleX.textProperty().addListener((o, oldV, newV) -> scaleXChange());
+        txtScaleY.textProperty().addListener((o, oldV, newV) -> scaleYChange());
+        txtScaleZ.textProperty().addListener((o, oldV, newV) -> scaleZChange());
+        txtTheta.textProperty().addListener((o, oldV, newV) -> thetaChange());
+        txtPsi.textProperty().addListener((o, oldV, newV) -> psiChange());
+        txtPhi.textProperty().addListener((o, oldV, newV) -> phiChange());
+        txtTranslateX.textProperty().addListener((o, oldV, newV) -> translateXChange());
+        txtTranslateY.textProperty().addListener((o, oldV, newV) -> translateYChange());
+        txtTranslateZ.textProperty().addListener((o, oldV, newV) -> translateZChange());
+
+        txtCamPosX.textProperty().addListener((o, oldV, newV) -> camPosChange());
+        txtCamPosY.textProperty().addListener((o, oldV, newV) -> camPosChange());
+        txtCamPosZ.textProperty().addListener((o, oldV, newV) -> camPosChange());
+        txtCamTargetX.textProperty().addListener((o, oldV, newV) -> camTargetChange());
+        txtCamTargetY.textProperty().addListener((o, oldV, newV) -> camTargetChange());
+        txtCamTargetZ.textProperty().addListener((o, oldV, newV) -> camTargetChange());
     }
 
     @FXML
     private void onOpenModelMenuItemClick() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
-        fileChooser.setTitle("Load Model");
-
         File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
-        if (file == null) {
-            return;
-        }
-
-        Path fileName = Path.of(file.getAbsolutePath());
-
+        if (file == null) return;
         try {
-            String fileContent = Files.readString(fileName);
-            mesh = ObjReader.read(fileContent);
-            // todo: обработка ошибок
-        } catch (IOException exception) {
+            Model mesh = ObjReader.read(Files.readString(file.toPath()));
+            mesh.triangulate();
+            mesh.recalculateNormals();
+            sceneObjects.add(new RenderObject(file.getName(), mesh));
+        } catch (IOException e) {}
+    }
 
+    @FXML
+    private void onOpenTextureMenuItemClick() {
+        if (selectedObject == null) return;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.bmp"));
+        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+        if (file != null) {
+            try { selectedObject.setTexture(new Image(file.toURI().toString())); } catch (Exception e) {}
         }
     }
 
-    // todo: сделать сохранение модели до и после преобразований
-    // todo: также нужно добавить текстовые поля для масштабирования, поворота и перемещения
+    @FXML private void handleDeleteModel() { if (selectedObject != null) { sceneObjects.remove(selectedObject); selectedObject = null; } }
+    @FXML private void handleDeleteTexture() { if (selectedObject != null) selectedObject.setTexture(null); }
+
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, 0, -TRANSLATION));
     }
-
     @FXML
     public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, 0, TRANSLATION));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, 0, TRANSLATION));
     }
-
     @FXML
     public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(TRANSLATION, 0, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(TRANSLATION, 0, 0));
     }
-
     @FXML
     public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
     }
-
     @FXML
     public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, TRANSLATION, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, TRANSLATION, 0));
     }
-
     @FXML
     public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3f(0, -TRANSLATION, 0));
+        if (activeCamera != null) activeCamera.movePosition(new Vector3f(0, -TRANSLATION, 0));
     }
 }

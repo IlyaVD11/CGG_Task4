@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="23713e07-1d2b-4495-998b-48f452b16076" name="Changes" comment="Changes" />
+    <list default="true" id="23713e07-1d2b-4495-998b-48f452b16076" name="Changes" comment="Changes">
+      <change afterPath="$PROJECT_DIR$/src/test/java/tests/GraphicConveyor/ConveyorTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cg/math/Matrix3x3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cg/math/Matrix3x3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cg/math/Matrix4x4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cg/math/Matrix4x4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cg/render_engine/GraphicConveyor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cg/render_engine/GraphicConveyor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cg/ui/GuiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cg/ui/GuiController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +27,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Math" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -38,6 +45,11 @@
   "keyToString": {
     "Application.Main.executor": "Run",
     "Application.Simple3DViewer.executor": "Run",
+    "JUnit.ConveyorTest.testLookAt.executor": "Run",
+    "JUnit.ConveyorTest.testPerspective.executor": "Run",
+    "JUnit.ConveyorTest.testRotateScaleTranslate.executor": "Run",
+    "JUnit.ConveyorTest.testVertexToPoint.executor": "Run",
+    "JUnit.Matrix4x4Test.executor": "Run",
     "JUnit.ObjReaderTest.executor": "Run",
     "JUnit.ObjWriterTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -50,7 +62,7 @@
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JUnit.ConveyorTest.testVertexToPoint">
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.cg.ui.Main" />
       <module name="CGG_Task4" />
@@ -58,53 +70,71 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Vector3fTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ConveyorTest.testLookAt" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CGG_Task4" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="tests.math.*" />
+          <option name="PATTERN" value="tests.GraphicConveyor.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="tests.math" />
-      <option name="MAIN_CLASS_NAME" value="tests.math.Vector3fTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Vector3fTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CGG_Task4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="tests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="tests" />
-      <option name="MAIN_CLASS_NAME" value="tests.Vector3fTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Vector3fTest.testNormalize3f" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CGG_Task4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="tests.math.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="tests.math" />
-      <option name="MAIN_CLASS_NAME" value="tests.math.Vector3fTest" />
-      <option name="METHOD_NAME" value="testNormalize3f" />
+      <option name="PACKAGE_NAME" value="tests.GraphicConveyor" />
+      <option name="MAIN_CLASS_NAME" value="tests.GraphicConveyor.ConveyorTest" />
+      <option name="METHOD_NAME" value="testLookAt" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Vector3fTest.testNormalizeWithNonZeroLength" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ConveyorTest.testPerspective" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CGG_Task4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.GraphicConveyor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests.GraphicConveyor" />
+      <option name="MAIN_CLASS_NAME" value="tests.GraphicConveyor.ConveyorTest" />
+      <option name="METHOD_NAME" value="testPerspective" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConveyorTest.testRotateScaleTranslate" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CGG_Task4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.GraphicConveyor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests.GraphicConveyor" />
+      <option name="MAIN_CLASS_NAME" value="tests.GraphicConveyor.ConveyorTest" />
+      <option name="METHOD_NAME" value="testRotateScaleTranslate" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConveyorTest.testVertexToPoint" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CGG_Task4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.GraphicConveyor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests.GraphicConveyor" />
+      <option name="MAIN_CLASS_NAME" value="tests.GraphicConveyor.ConveyorTest" />
+      <option name="METHOD_NAME" value="testVertexToPoint" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Matrix4x4Test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CGG_Task4" />
       <extension name="coverage">
         <pattern>
@@ -113,23 +143,7 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="tests.math" />
-      <option name="MAIN_CLASS_NAME" value="tests.math.Vector3fTest" />
-      <option name="METHOD_NAME" value="testNormalizeWithNonZeroLength" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Vector4fTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="CGG_Task4" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="tests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="tests" />
-      <option name="MAIN_CLASS_NAME" value="tests.Vector4fTest" />
+      <option name="MAIN_CLASS_NAME" value="tests.math.Matrix4x4Test" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -137,11 +151,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.Vector4fTest" />
-        <item itemvalue="JUnit.Vector3fTest (1)" />
-        <item itemvalue="JUnit.Vector3fTest.testNormalizeWithNonZeroLength" />
-        <item itemvalue="JUnit.Vector3fTest.testNormalize3f" />
-        <item itemvalue="JUnit.Vector3fTest" />
+        <item itemvalue="JUnit.ConveyorTest.testVertexToPoint" />
+        <item itemvalue="JUnit.ConveyorTest.testPerspective" />
+        <item itemvalue="JUnit.ConveyorTest.testLookAt" />
+        <item itemvalue="JUnit.Matrix4x4Test" />
+        <item itemvalue="JUnit.ConveyorTest.testRotateScaleTranslate" />
       </list>
     </recent_temporary>
   </component>
@@ -186,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768543170229</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Changes">
+      <option name="closed" value="true" />
+      <created>1768543745516</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768543745516</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

@@ -1,6 +1,5 @@
 package com.cg.math;
 
-import java.util.Objects;
 
 public class Matrix3x3 {
     public float[][] matrix3x3 = new float[3][3];
@@ -20,8 +19,18 @@ public class Matrix3x3 {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Matrix3x3 matrix3x31)) return false;
-        return Objects.deepEquals(matrix3x3, matrix3x31.matrix3x3);
+        if (!(o instanceof Matrix3x3 that)) return false;
+
+        float epsilon = 1e-6f;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (Math.abs(matrix3x3[i][j] - that.matrix3x3[i][j]) > epsilon) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Matrix3x3 addition(Matrix3x3 other) {

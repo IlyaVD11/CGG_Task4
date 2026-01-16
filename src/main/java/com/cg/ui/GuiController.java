@@ -175,17 +175,28 @@ public class GuiController {
         if (isDragging) {
             float dx = (float) (mouseEvent.getX() - mouseX);
             float dy = (float) (mouseEvent.getY() - mouseY);
-            float sensitivity = 0.005F;
+            float sensitivity = 0.001F;
 
-            if (selectedObject != null) {
-                selectedObject.getRotation().y += dx * sensitivity;
-                selectedObject.getRotation().x += dy * sensitivity;
-                fillTextFields(selectedObject);
-            }
+            Vector3f z = activeCamera.getTarget().subtraction(activeCamera.getPosition());
+            z.normalize();
 
-            if (activeCamera != null) {
-                activeCamera.movePosition(new Vector3f(dx * 0.01F, dy * 0.01F, 0.0F));
-            }
+            Vector3f x = new Vector3f(0, 1, 0).crossProduct(z);
+            x.normalize();
+
+            Vector3f y = z.crossProduct(x);
+            y.normalize();
+
+            z = z.addition(x.multiply(dx * sensitivity)).subtraction(y.multiply(dy * sensitivity));
+            z.normalize();
+
+            float distance = (float) Math.sqrt(
+                    Math.pow(activeCamera.getPosition().x - activeCamera.getTarget().x, 2) +
+                    Math.pow(activeCamera.getPosition().y - activeCamera.getTarget().y, 2) +
+                    Math.pow(activeCamera.getPosition().z - activeCamera.getTarget().z, 2)
+            );
+
+            Vector3f newTarget = activeCamera.getPosition().addition(z.multiply(distance));
+            activeCamera.setTarget(newTarget);
 
             mouseX = mouseEvent.getX();
             mouseY = mouseEvent.getY();

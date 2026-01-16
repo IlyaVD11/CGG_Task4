@@ -1,6 +1,5 @@
 package com.cg.math;
 
-import java.util.Objects;
 
 public class Matrix4x4 {
     public float[][] matrix4x4 = new float[4][4];
@@ -22,8 +21,18 @@ public class Matrix4x4 {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Matrix4x4 matrix4x41)) return false;
-        return Objects.deepEquals(matrix4x4, matrix4x41.matrix4x4);
+        if (!(o instanceof Matrix4x4 that)) return false;
+
+        float epsilon = 1e-6f;
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (Math.abs(matrix4x4[i][j] - that.matrix4x4[i][j]) > epsilon) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Matrix4x4 addition(Matrix4x4 other) {

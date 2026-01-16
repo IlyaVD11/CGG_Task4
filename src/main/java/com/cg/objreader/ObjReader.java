@@ -65,7 +65,7 @@ public class ObjReader {
 
 	// --- Методы парсинга (оставляем без изменений, они нормальные) ---
 
-	protected static Vector3f parseVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
+	public static Vector3f parseVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
 		try {
 			return new Vector3f(
 					Float.parseFloat(wordsInLineWithoutToken.get(0)),
@@ -106,7 +106,7 @@ public class ObjReader {
 		}
 	}
 
-	protected static Polygon parseFace(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
+	public static Polygon parseFace(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
 		ArrayList<Integer> onePolygonVertexIndices = new ArrayList<>();
 		ArrayList<Integer> onePolygonTextureVertexIndices = new ArrayList<>();
 		ArrayList<Integer> onePolygonNormalIndices = new ArrayList<>();

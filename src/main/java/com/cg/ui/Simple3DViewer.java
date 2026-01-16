@@ -3,6 +3,7 @@ package com.cg.ui;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -22,6 +23,8 @@ public class Simple3DViewer extends Application {
         viewport.prefHeightProperty().bind(scene.heightProperty());
 
         stage.setTitle("Simple3DViewer");
+        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.png")));
+        stage.getIcons().add(icon);
         stage.setScene(scene);
         stage.show();
     }

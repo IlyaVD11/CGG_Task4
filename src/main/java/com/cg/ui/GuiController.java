@@ -2,6 +2,7 @@ package com.cg.ui;
 
 import com.cg.model.Model;
 import com.cg.objreader.ObjReader;
+import com.cg.objreader.ObjReaderException;
 import com.cg.objwriter.ObjWriter;
 import com.cg.render_engine.Camera;
 import com.cg.render_engine.GraphicConveyor;
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import javafx.scene.control.Alert;
 
 public class GuiController {
 
@@ -279,18 +281,38 @@ public class GuiController {
         txtCamTargetZ.textProperty().addListener((o, oldV, newV) -> camTargetChange());
     }
 
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @FXML
     private void onOpenModelMenuItemClick() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
         if (file == null) return;
+
         try {
-            Model mesh = ObjReader.read(Files.readString(file.toPath()));
+            String fileContent = Files.readString(file.toPath());
+            Model mesh = ObjReader.read(fileContent);
+
             mesh.triangulate();
             mesh.recalculateNormals();
-            sceneObjects.add(new RenderObject(file.getName(), mesh));
-        } catch (IOException e) {}
+
+            RenderObject newObject = new RenderObject(file.getName(), mesh);
+            sceneObjects.add(newObject);
+
+        } catch (ObjReaderException e) {
+            showError("Parsing Error", "Failed to parse OBJ file:\n" + e.getMessage());
+        } catch (IOException e) {
+            showError("IO Error", "Failed to read file:\n" + e.getMessage());
+        } catch (Exception e) {
+            showError("Unknown Error", "An unexpected error occurred:\n" + e.getMessage());
+        }
     }
 
     @FXML

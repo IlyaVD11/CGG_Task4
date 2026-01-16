@@ -3,11 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
-
 <?import javafx.scene.input.KeyCodeCombination?>
+
 <AnchorPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml" fx:controller="com.cg.ui.GuiController">
 
-    <MenuBar>
+    <MenuBar AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <Menu mnemonicParsing="false" text="Camera Options">
             <MenuItem mnemonicParsing="false" onAction="#handleCameraForward" text="Forward">
                 <accelerator>
@@ -44,58 +44,83 @@
 
     <Canvas fx:id="canvas" width="1600" height="870" AnchorPane.topAnchor="30.0"/>
 
-    <HBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0" spacing="10.0">
-        <VBox spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 10; -fx-background-radius: 5; -fx-pref-width: 200;">
-            <Label text="MODELS" style="-fx-font-weight: bold;"/>
-            <Button text="Load Model" onAction="#onOpenModelMenuItemClick" maxWidth="Infinity"/>
-            <ListView fx:id="objectsList" prefHeight="120.0" />
-            <HBox spacing="5.0">
-                <Button text="Delete Model" onAction="#handleDeleteModel" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-                <Button text="Save Model" onAction="#onSaveModelMenuItemClick" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+    <VBox AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0" spacing="10.0">
+
+        <HBox spacing="10.0">
+            <VBox spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 10; -fx-background-radius: 5; -fx-pref-width: 200;">
+                <Label text="MODELS" style="-fx-font-weight: bold;"/>
+                <Button text="Load Model" onAction="#onOpenModelMenuItemClick" maxWidth="Infinity"/>
+                <ListView fx:id="objectsList" prefHeight="120.0" />
+                <HBox spacing="5.0">
+                    <Button text="Delete Model" onAction="#handleDeleteModel" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button text="Save Model" onAction="#onSaveModelMenuItemClick" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                </HBox>
+                <Separator />
+                <Button text="Add Texture" onAction="#onOpenTextureMenuItemClick" maxWidth="Infinity"/>
+                <Button text="Delete Texture" onAction="#handleDeleteTexture" maxWidth="Infinity"/>
+                <Separator />
+                <Label text="Scale X/Y/Z"/>
+                <HBox spacing="2">
+                    <TextField fx:id="txtScaleX" text="1.0" prefWidth="60"/>
+                    <TextField fx:id="txtScaleY" text="1.0" prefWidth="60"/>
+                    <TextField fx:id="txtScaleZ" text="1.0" prefWidth="60"/>
+                </HBox>
+                <Label text="Rotation X/Y/Z"/>
+                <HBox spacing="2">
+                    <TextField fx:id="txtTheta" text="0.0" prefWidth="60"/>
+                    <TextField fx:id="txtPsi" text="0.0" prefWidth="60"/>
+                    <TextField fx:id="txtPhi" text="0.0" prefWidth="60"/>
+                </HBox>
+                <Label text="Translation X/Y/Z"/>
+                <HBox spacing="2">
+                    <TextField fx:id="txtTranslateX" text="0.0" prefWidth="60"/>
+                    <TextField fx:id="txtTranslateY" text="0.0" prefWidth="60"/>
+                    <TextField fx:id="txtTranslateZ" text="0.0" prefWidth="60"/>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 10; -fx-background-radius: 5; -fx-pref-width: 200;">
+                <Label text="CAMERAS" style="-fx-font-weight: bold;"/>
+                <Button text="Add Camera" onAction="#handleAddCamera" maxWidth="Infinity"/>
+                <ListView fx:id="camerasList" prefHeight="120.0" />
+                <Button text="Delete Camera" onAction="#handleRemoveCamera" maxWidth="Infinity"/>
+                <Separator />
+                <Label text="Position X/Y/Z"/>
+                <TextField fx:id="txtCamPosX" promptText="X"/>
+                <TextField fx:id="txtCamPosY" promptText="Y"/>
+                <TextField fx:id="txtCamPosZ" promptText="Z"/>
+                <Separator />
+                <Label text="Target X/Y/Z"/>
+                <TextField fx:id="txtCamTargetX" promptText="X"/>
+                <TextField fx:id="txtCamTargetY" promptText="Y"/>
+                <TextField fx:id="txtCamTargetZ" promptText="Z"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 10; -fx-background-radius: 5;">
+
+            <Label text="Render Options" style="-fx-font-weight: bold;"/>
+            <HBox spacing="15.0">
+                <CheckBox fx:id="cbWireframe" text="Wireframe" selected="true"/>
+                <CheckBox fx:id="cbTexture" text="Use Texture" />
+                <CheckBox fx:id="cbLighting" text="Use Lighting" />
             </HBox>
+
             <Separator />
-            <Button text="Add Texture" onAction="#onOpenTextureMenuItemClick" maxWidth="Infinity"/>
-            <Button text="Delete Texture" onAction="#handleDeleteTexture" maxWidth="Infinity"/>
-            <Separator />
-            <Label text="Scale X/Y/Z"/>
-            <HBox spacing="2">
-                <TextField fx:id="txtScaleX" text="1.0" prefWidth="60"/>
-                <TextField fx:id="txtScaleY" text="1.0" prefWidth="60"/>
-                <TextField fx:id="txtScaleZ" text="1.0" prefWidth="60"/>
+            <Label text="Edit Model (Index)" style="-fx-font-weight: bold;"/>
+
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <Label text="Del Vertex #:"/>
+                <TextField fx:id="txtVertexIndex" promptText="0" prefWidth="50"/>
+                <Button text="Del" onAction="#handleDeleteVertex"/>
+
+                <Separator orientation="VERTICAL"/>
+
+                <Label text="Del Polygon #:"/>
+                <TextField fx:id="txtPolygonIndex" promptText="0" prefWidth="50"/>
+                <Button text="Del" onAction="#handleDeletePolygon"/>
             </HBox>
-            <Label text="Rotation X/Y/Z"/>
-            <HBox spacing="2">
-                <TextField fx:id="txtTheta" text="0.0" prefWidth="60"/>
-                <TextField fx:id="txtPsi" text="0.0" prefWidth="60"/>
-                <TextField fx:id="txtPhi" text="0.0" prefWidth="60"/>
-            </HBox>
-            <Label text="Translation X/Y/Z"/>
-            <HBox spacing="2">
-                <TextField fx:id="txtTranslateX" text="0.0" prefWidth="60"/>
-                <TextField fx:id="txtTranslateY" text="0.0" prefWidth="60"/>
-                <TextField fx:id="txtTranslateZ" text="0.0" prefWidth="60"/>
-            </HBox>
-            <Separator />
-            <CheckBox fx:id="cbWireframe" text="Wireframe" selected="true"/>
-            <CheckBox fx:id="cbTexture" text="Use Texture" />
-            <CheckBox fx:id="cbLighting" text="Use Lighting" />
         </VBox>
 
-        <VBox spacing="5.0" style="-fx-background-color: rgba(255, 255, 255, 0.8); -fx-padding: 10; -fx-background-radius: 5; -fx-pref-width: 200;">
-            <Label text="CAMERAS" style="-fx-font-weight: bold;"/>
-            <Button text="Add Camera" onAction="#handleAddCamera" maxWidth="Infinity"/>
-            <ListView fx:id="camerasList" prefHeight="120.0" />
-            <Button text="Delete Camera" onAction="#handleRemoveCamera" maxWidth="Infinity"/>
-            <Separator />
-            <Label text="Position X/Y/Z"/>
-            <TextField fx:id="txtCamPosX" promptText="X"/>
-            <TextField fx:id="txtCamPosY" promptText="Y"/>
-            <TextField fx:id="txtCamPosZ" promptText="Z"/>
-            <Separator />
-            <Label text="Target X/Y/Z"/>
-            <TextField fx:id="txtCamTargetX" promptText="X"/>
-            <TextField fx:id="txtCamTargetY" promptText="Y"/>
-            <TextField fx:id="txtCamTargetZ" promptText="Z"/>
-        </VBox>
-    </HBox>
+    </VBox>
 </AnchorPane>

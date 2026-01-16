@@ -1,6 +1,7 @@
 package com.cg.ui;
 
 import com.cg.model.Model;
+import com.cg.model.Polygon;
 import com.cg.objreader.ObjReader;
 import com.cg.objreader.ObjReaderException;
 import com.cg.objwriter.ObjWriter;
@@ -50,6 +51,9 @@ public class GuiController {
     @FXML private TextField txtCamTargetX, txtCamTargetY, txtCamTargetZ;
 
     @FXML private CheckBox cbWireframe, cbTexture, cbLighting;
+
+    @FXML private TextField txtVertexIndex;
+    @FXML private TextField txtPolygonIndex;
 
     private ObservableList<RenderObject> sceneObjects = FXCollections.observableArrayList();
     private RenderObject selectedObject = null;
@@ -210,7 +214,7 @@ public class GuiController {
     }
 
     private void handleOnScroll(ScrollEvent mouseEvent) {
-        float zoomStep = (float) (mouseEvent.getDeltaY() / 100.0F);
+        float zoomStep = (float) (mouseEvent.getDeltaY() / 10.0F);
         if (activeCamera != null) {
             activeCamera.movePosition(new Vector3f(0.0F, 0.0F, zoomStep));
         }
@@ -362,6 +366,64 @@ public class GuiController {
                 alert.setContentText(e.getMessage());
                 alert.showAndWait();
             }
+        }
+    }
+
+    @FXML
+    private void handleDeletePolygon() {
+        if (selectedObject == null) return;
+
+        try {
+            int index = Integer.parseInt(txtPolygonIndex.getText());
+            Model model = selectedObject.getMesh();
+
+            if (index >= 0 && index < model.polygons.size()) {
+                model.polygons.remove(index);
+            }
+
+        } catch (Exception e) {
+        }
+    }
+
+    @FXML
+    private void handleDeleteVertex() {
+        if (selectedObject == null) return;
+
+        try {
+            int indexToDelete = Integer.parseInt(txtVertexIndex.getText());
+            Model model = selectedObject.getMesh();
+
+            if (indexToDelete >= 0 && indexToDelete < model.vertices.size()) {
+                model.vertices.remove(indexToDelete);
+
+                ArrayList<Polygon> newPolygons = new ArrayList<>();
+
+                for (Polygon polygon : model.polygons) {
+                    boolean isPolygonBad = false;
+                    ArrayList<Integer> newIndices = new ArrayList<>();
+
+                    for (int oldIndex : polygon.getVertexIndices()) {
+                        if (oldIndex == indexToDelete) {
+                            isPolygonBad = true;
+                            break;
+                        }
+
+                        if (oldIndex > indexToDelete) {
+                            newIndices.add(oldIndex - 1);
+                        } else {
+                            newIndices.add(oldIndex);
+                        }
+                    }
+
+                    if (!isPolygonBad) {
+                        polygon.setVertexIndices(newIndices);
+                        newPolygons.add(polygon);
+                    }
+                }
+                model.polygons = newPolygons;
+            }
+
+        } catch (Exception e) {
         }
     }
 

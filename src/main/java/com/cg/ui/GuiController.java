@@ -232,15 +232,15 @@ public class GuiController {
         txtTranslateZ.setText(String.valueOf(obj.getPosition().z));
     }
 
-    private void scaleXChange() { if (selectedObject != null) try { selectedObject.getScale().x = Float.parseFloat(txtScaleX.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void scaleYChange() { if (selectedObject != null) try { selectedObject.getScale().y = Float.parseFloat(txtScaleY.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void scaleZChange() { if (selectedObject != null) try { selectedObject.getScale().z = Float.parseFloat(txtScaleZ.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void thetaChange() { if (selectedObject != null) try { selectedObject.getRotation().x = Float.parseFloat(txtTheta.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void psiChange() { if (selectedObject != null) try { selectedObject.getRotation().y = Float.parseFloat(txtPsi.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void phiChange() { if (selectedObject != null) try { selectedObject.getRotation().z = Float.parseFloat(txtPhi.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void translateXChange() { if (selectedObject != null) try { selectedObject.getPosition().x = Float.parseFloat(txtTranslateX.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void translateYChange() { if (selectedObject != null) try { selectedObject.getPosition().y = Float.parseFloat(txtTranslateY.getText().replace(',', '.')); } catch (Exception e) {} }
-    private void translateZChange() { if (selectedObject != null) try { selectedObject.getPosition().z = Float.parseFloat(txtTranslateZ.getText().replace(',', '.')); } catch (Exception e) {} }
+    private void scaleXChange() { if (selectedObject != null) try { selectedObject.getScale().x = Float.parseFloat(txtScaleX.getText()); } catch (Exception e) {} }
+    private void scaleYChange() { if (selectedObject != null) try { selectedObject.getScale().y = Float.parseFloat(txtScaleY.getText()); } catch (Exception e) {} }
+    private void scaleZChange() { if (selectedObject != null) try { selectedObject.getScale().z = Float.parseFloat(txtScaleZ.getText()); } catch (Exception e) {} }
+    private void thetaChange() { if (selectedObject != null) try { selectedObject.getRotation().x = Float.parseFloat(txtTheta.getText()); } catch (Exception e) {} }
+    private void psiChange() { if (selectedObject != null) try { selectedObject.getRotation().y = Float.parseFloat(txtPsi.getText()); } catch (Exception e) {} }
+    private void phiChange() { if (selectedObject != null) try { selectedObject.getRotation().z = Float.parseFloat(txtPhi.getText()); } catch (Exception e) {} }
+    private void translateXChange() { if (selectedObject != null) try { selectedObject.getPosition().x = Float.parseFloat(txtTranslateX.getText()); } catch (Exception e) {} }
+    private void translateYChange() { if (selectedObject != null) try { selectedObject.getPosition().y = Float.parseFloat(txtTranslateY.getText()); } catch (Exception e) {} }
+    private void translateZChange() { if (selectedObject != null) try { selectedObject.getPosition().z = Float.parseFloat(txtTranslateZ.getText()); } catch (Exception e) {} }
 
     private void camPosChange() {
         if (activeCamera != null) {

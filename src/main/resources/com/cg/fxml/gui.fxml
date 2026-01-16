@@ -13,7 +13,10 @@
             <Label text="MODELS" style="-fx-font-weight: bold;"/>
             <Button text="Load Model" onAction="#onOpenModelMenuItemClick" maxWidth="Infinity"/>
             <ListView fx:id="objectsList" prefHeight="120.0" />
-            <Button text="Delete Model" onAction="#handleDeleteModel" maxWidth="Infinity"/>
+            <HBox spacing="5.0">
+                <Button text="Delete Model" onAction="#handleDeleteModel" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                <Button text="Save Model" onAction="#onSaveModelMenuItemClick" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            </HBox>
             <Separator />
             <Button text="Add Texture" onAction="#onOpenTextureMenuItemClick" maxWidth="Infinity"/>
             <Button text="Delete Texture" onAction="#handleDeleteTexture" maxWidth="Infinity"/>

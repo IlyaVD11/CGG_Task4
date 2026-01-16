@@ -27,6 +27,9 @@ public class ObjReader {
 			if (wordsInLine.isEmpty() || wordsInLine.get(0).isEmpty()) {
 				continue;
 			}
+			if (result.vertices.isEmpty()) {
+				throw new ObjReaderException("File does not contain any vertices.", lineInd);
+			}
 
 			final String token = wordsInLine.get(0);
 			wordsInLine.remove(0);

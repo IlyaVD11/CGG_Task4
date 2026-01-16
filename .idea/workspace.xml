@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="23713e07-1d2b-4495-998b-48f452b16076" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="23713e07-1d2b-4495-998b-48f452b16076" name="Changes" comment="Changes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,7 +20,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="b4ab7c423ef9c8da39e65b6486530f7f7556ae24" />
+        <entry key="$PROJECT_DIR$" value="Math" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -36,22 +34,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.Simple3DViewer.executor": "Run",
-    "JUnit.ObjReaderTest.executor": "Run",
-    "JUnit.ObjWriterTest.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Dev/4 task kgg",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Simple3DViewer.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ObjReaderTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ObjWriterTest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Dev/4 task kgg&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.cg.ui.Main" />
@@ -60,31 +58,78 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ObjReaderTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Vector3fTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CGG_Task4" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="tests.ObjReader.*" />
+          <option name="PATTERN" value="tests.math.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="tests.ObjReader" />
-      <option name="MAIN_CLASS_NAME" value="tests.ObjReader.ObjReaderTest" />
+      <option name="PACKAGE_NAME" value="tests.math" />
+      <option name="MAIN_CLASS_NAME" value="tests.math.Vector3fTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ObjWriterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Vector3fTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="CGG_Task4" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="tests.ObjWriter.*" />
+          <option name="PATTERN" value="tests.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="tests.ObjWriter" />
-      <option name="MAIN_CLASS_NAME" value="tests.ObjWriter.ObjWriterTest" />
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.Vector3fTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Vector3fTest.testNormalize3f" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CGG_Task4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.math.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests.math" />
+      <option name="MAIN_CLASS_NAME" value="tests.math.Vector3fTest" />
+      <option name="METHOD_NAME" value="testNormalize3f" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Vector3fTest.testNormalizeWithNonZeroLength" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CGG_Task4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.math.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests.math" />
+      <option name="MAIN_CLASS_NAME" value="tests.math.Vector3fTest" />
+      <option name="METHOD_NAME" value="testNormalizeWithNonZeroLength" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Vector4fTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CGG_Task4" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tests.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tests" />
+      <option name="MAIN_CLASS_NAME" value="tests.Vector4fTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -92,8 +137,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.ObjWriterTest" />
-        <item itemvalue="JUnit.ObjReaderTest" />
+        <item itemvalue="JUnit.Vector4fTest" />
+        <item itemvalue="JUnit.Vector3fTest (1)" />
+        <item itemvalue="JUnit.Vector3fTest.testNormalizeWithNonZeroLength" />
+        <item itemvalue="JUnit.Vector3fTest.testNormalize3f" />
+        <item itemvalue="JUnit.Vector3fTest" />
       </list>
     </recent_temporary>
   </component>
@@ -122,7 +170,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768507544679</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Changes">
+      <option name="closed" value="true" />
+      <created>1768542797344</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1768542797344</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

@@ -2,6 +2,7 @@ package com.cg.ui;
 
 import com.cg.model.Model;
 import com.cg.objreader.ObjReader;
+import com.cg.objwriter.ObjWriter;
 import com.cg.render_engine.Camera;
 import com.cg.render_engine.GraphicConveyor;
 import com.cg.render_engine.RenderEngine;
@@ -289,6 +290,45 @@ public class GuiController {
         File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
         if (file != null) {
             try { selectedObject.setTexture(new Image(file.toURI().toString())); } catch (Exception e) {}
+        }
+    }
+
+    @FXML
+    private void onSaveModelMenuItemClick() {
+        if (selectedObject == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a model from the list to save.");
+            alert.showAndWait();
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Model");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+
+        fileChooser.setInitialFileName(selectedObject.getName().replace(".obj", "") + "_saved.obj");
+
+        File file = fileChooser.showSaveDialog((Stage) canvas.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                ObjWriter.write(selectedObject.getMesh(), file.getAbsolutePath());
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText("Model saved successfully to: " + file.getName());
+                alert.showAndWait();
+
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Could not save model");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
         }
     }
 

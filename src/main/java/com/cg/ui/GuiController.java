@@ -242,9 +242,9 @@ public class GuiController {
         if (activeCamera != null) {
             try {
                 activeCamera.setPosition(new Vector3f(
-                        Float.parseFloat(txtCamPosX.getText().replace(',', '.')),
-                        Float.parseFloat(txtCamPosY.getText().replace(',', '.')),
-                        Float.parseFloat(txtCamPosZ.getText().replace(',', '.'))
+                        Float.parseFloat(txtCamPosX.getText()),
+                        Float.parseFloat(txtCamPosY.getText()),
+                        Float.parseFloat(txtCamPosZ.getText())
                 ));
             } catch (Exception e) {}
         }
@@ -254,9 +254,9 @@ public class GuiController {
         if (activeCamera != null) {
             try {
                 activeCamera.setTarget(new Vector3f(
-                        Float.parseFloat(txtCamTargetX.getText().replace(',', '.')),
-                        Float.parseFloat(txtCamTargetY.getText().replace(',', '.')),
-                        Float.parseFloat(txtCamTargetZ.getText().replace(',', '.'))
+                        Float.parseFloat(txtCamTargetX.getText()),
+                        Float.parseFloat(txtCamTargetY.getText()),
+                        Float.parseFloat(txtCamTargetZ.getText())
                 ));
             } catch (Exception e) {}
         }

@@ -23,8 +23,12 @@ public class Simple3DViewer extends Application {
         viewport.prefHeightProperty().bind(scene.heightProperty());
 
         stage.setTitle("Simple3DViewer");
-        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.png")));
-        stage.getIcons().add(icon);
+        try {
+            Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.png")));
+            stage.getIcons().add(icon);
+        } catch (Exception e) {
+            System.out.println("Не удалось загрузить иконку: " + e.getMessage());
+        }
         stage.setScene(scene);
         stage.show();
     }

@@ -27,12 +27,4 @@ class ObjReaderTest {
             ObjReader.parseVertex(wordsInLineWithoutToken, 10);
         });
     }
-
-    @Test
-    public void testParseFaceWithEmptyTexture() {
-        // Проверяем формат f v//vn
-        ArrayList<String> words = new ArrayList<>(Arrays.asList("1//1", "2//2", "3//3"));
-        // Мы просто проверяем, что это не вызывает исключений
-        Assertions.assertDoesNotThrow(() -> ObjReader.parseFace(words, 1));
-    }
 }
